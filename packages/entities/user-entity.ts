@@ -1,5 +1,6 @@
 import "reflect-metadata";
-
+import { OneToMany } from "typeorm";
+import { FollowedRepository } from "./followed-repository-entity";
 import { Role } from "./role-entity";
 import { UserSettings } from "./user-settings-entity";
 import {
@@ -30,6 +31,10 @@ export class User {
 
   @ManyToOne(() => Role, role => role.users)
   role: Role;
+
+  @OneToMany(() => FollowedRepository, fr => fr.user)
+  followedRepositories: FollowedRepository[];
+
 
 }
 
