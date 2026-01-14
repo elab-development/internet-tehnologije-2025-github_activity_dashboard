@@ -13,7 +13,8 @@ export const dataSource = new DataSource({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   entities: appEntities,
-  synchronize: true,
+  synchronize: false,
+  migrations: ["packages/database/migrations/*.ts"],
   ssl: process.env.DB_SSL === "true",
   extra: {
     ssl: {
