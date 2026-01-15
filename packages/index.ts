@@ -3,6 +3,7 @@ import "reflect-metadata";
 import express from "express";
 import * as dotenv from "dotenv";
 import { dataSource } from "./database/data-src";
+import authRoutes from "./modules/auth/auth.routes";
 
 dotenv.config();
 
@@ -10,7 +11,7 @@ const port = process.env.PORT || 3999;
 
 const app = express();
 app.use(express.json());
-
+app.use("/auth", authRoutes);
 app.get("/health", (req, res) => {
   res.status(200).json({
     status: "ok",

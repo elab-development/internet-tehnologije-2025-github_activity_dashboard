@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { OneToMany } from "typeorm";
+import { JoinColumn, OneToMany } from "typeorm";
 import { FollowedRepository } from "./followed-repository-entity";
 import { Role } from "./role-entity";
 import { UserSettings } from "./user-settings-entity";
@@ -16,6 +16,9 @@ import {
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+  
+  @Column({ nullable: false })
+  username: string;
 
   @Column({ unique: true })
   email: string;
@@ -26,11 +29,13 @@ export class User {
   @OneToOne(() => UserSettings, settings => settings.user)
   settings: UserSettings;
   
-  @CreateDateColumn()
-  createdAt: Date;
+ @CreateDateColumn({ name: "created_at" })
+createdAt: Date;
 
-  @ManyToOne(() => Role, role => role.users)
-  role: Role;
+@ManyToOne(() => Role, role => role.users)
+@JoinColumn({ name: "role_id" })
+role: Role;
+
 
   @OneToMany(() => FollowedRepository, fr => fr.user)
   followedRepositories: FollowedRepository[];
@@ -39,20 +44,5 @@ export class User {
 }
 
 
-/*import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
-export class UserEntity {
-  @PrimaryGeneratedColumn("uuid")
-  id: string;
-
-  @Column({ unique: true })
-  email: string;
-
-  @Column()
-  password: string;
-
-  @CreateDateColumn()
-  createdAt: Date;
-}*/
 
