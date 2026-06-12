@@ -14,29 +14,39 @@ export default function DashboardPage() {
   const [opis, setOpis] = useState('')
   const [kategorija, setKategorija] = useState('OSTALO')
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [podcasts, setPodcasts] = useState<any[]>([])
 
   useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login')
-    }
+    if (status === 'unauthenticated') router.push('/login')
   }, [status, router])
 
   useEffect(() => {
-    fetchPodcasts()
-  }, [])
+    if (session?.user) fetchMyPodcasts()
+  }, [session])
 
-  async function fetchPodcasts() {
+  async function fetchMyPodcasts() {
     const res = await fetch('/api/podcasts')
-    const data = await res.json()
-    setPodcasts(data)
+    const all = await res.json()
+    const userId = (session?.user as any).id
+    const role = (session?.user as any).role
+
+    const mine = role === 'ADMIN' ? all : all.filter((p: any) => p.creatorId === userId)
+
+    // za svaki podcast, povuci epizode
+    const withEpisodes = await Promise.all(
+      mine.map(async (p: any) => {
+        const r = await fetch(`/api/podcasts/${p.id}/episodes`)
+        const episodes = await r.json()
+        return { ...p, episodes }
+      })
+    )
+
+    setPodcasts(withEpisodes)
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleCreatePodcast(e: React.FormEvent) {
     e.preventDefault()
     setError('')
-    setSuccess('')
 
     const res = await fetch('/api/podcasts', {
       method: 'POST',
@@ -46,16 +56,25 @@ export default function DashboardPage() {
     })
 
     const data = await res.json()
-
     if (!res.ok) {
       setError(data.error || 'Greška')
       return
     }
 
-    setSuccess('Podcast kreiran!')
     setNaziv('')
     setOpis('')
-    fetchPodcasts()
+    fetchMyPodcasts()
+  }
+
+  async function handleDeletePodcast(id: string) {
+  if (!confirm('Obrisati podcast i sve njegove epizode?')) return
+  const res = await fetch(`/api/podcasts/${id}`, { method: 'DELETE', credentials: 'include' })
+  if (!res.ok) {
+    const data = await res.json()
+    alert(data.error || 'Greška prilikom brisanja')
+    return
+  }
+  fetchMyPodcasts()
   }
 
   if (status === 'loading') return <p className="p-4">Učitavanje...</p>
@@ -68,7 +87,7 @@ export default function DashboardPage() {
       <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
 
       {role === 'KREATOR' && (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3 border p-4 rounded mb-6">
+        <form onSubmit={handleCreatePodcast} className="flex flex-col gap-3 border p-4 rounded mb-6">
           <h2 className="font-semibold">Novi podcast</h2>
           <input
             type="text"
@@ -96,19 +115,128 @@ export default function DashboardPage() {
             Kreiraj
           </button>
           {error && <p className="text-red-600">{error}</p>}
-          {success && <p className="text-green-600">{success}</p>}
         </form>
       )}
 
-      <h2 className="font-semibold mb-2">Svi podkasti</h2>
-      <ul className="flex flex-col gap-2">
+      <h2 className="font-semibold mb-2">{role === 'ADMIN' ? 'Svi podkasti' : 'Moji podkasti'}</h2>
+
+      <div className="flex flex-col gap-4">
         {podcasts.map((p) => (
-          <li key={p.id} className="border p-2 rounded">
-            <strong>{p.naziv}</strong> ({p.kategorija}) - by {p.creator.ime}
-            <p className="text-sm text-gray-600">{p.opis}</p>
+          <div key={p.id} className="border p-3 rounded">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-semibold text-lg">{p.naziv}</h3>
+                <p className="text-sm text-gray-500">{p.kategorija}</p>
+              </div>
+              <button
+                onClick={() => handleDeletePodcast(p.id)}
+                className="text-red-600 text-sm"
+              >
+                Obriši podcast
+              </button>
+            </div>
+
+            <EpisodeManager podcastId={p.id} episodes={p.episodes} onChange={fetchMyPodcasts} />
+          </div>
+        ))}
+        {podcasts.length === 0 && <p className="text-sm text-gray-500">Nemate podkaste.</p>}
+      </div>
+    </div>
+  )
+}
+
+function EpisodeManager({
+  podcastId,
+  episodes,
+  onChange,
+}: {
+  podcastId: string
+  episodes: any[]
+  onChange: () => void
+}) {
+  const [naslov, setNaslov] = useState('')
+  const [opis, setOpis] = useState('')
+  const [audioUrl, setAudioUrl] = useState('')
+  const [trajanje, setTrajanje] = useState('')
+  const [error, setError] = useState('')
+
+  async function handleAddEpisode(e: React.FormEvent) {
+    e.preventDefault()
+    setError('')
+
+    const res = await fetch(`/api/podcasts/${podcastId}/episodes`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ naslov, opis, audioUrl, trajanje: Number(trajanje) }),
+    })
+
+    const data = await res.json()
+    if (!res.ok) {
+      setError(data.error || 'Greška')
+      return
+    }
+
+    setNaslov('')
+    setOpis('')
+    setAudioUrl('')
+    setTrajanje('')
+    onChange()
+  }
+
+  async function handleDeleteEpisode(id: string) {
+    if (!confirm('Obrisati epizodu?')) return
+    await fetch(`/api/episodes/${id}`, { method: 'DELETE', credentials: 'include' })
+    onChange()
+  }
+
+  return (
+    <div className="mt-3">
+      <ul className="flex flex-col gap-1 mb-2">
+        {episodes.map((ep) => (
+          <li key={ep.id} className="flex justify-between text-sm border-b py-1">
+            <span>{ep.naslov} ({Math.round(ep.trajanje / 60)} min)</span>
+            <button onClick={() => handleDeleteEpisode(ep.id)} className="text-red-600">
+              Obriši
+            </button>
           </li>
         ))}
       </ul>
+
+      <form onSubmit={handleAddEpisode} className="flex flex-col gap-2 bg-gray-50 p-2 rounded">
+        <input
+          type="text"
+          placeholder="Naslov epizode"
+          value={naslov}
+          onChange={(e) => setNaslov(e.target.value)}
+          className="border p-1 rounded text-sm"
+        />
+        <input
+          type="text"
+          placeholder="Opis"
+          value={opis}
+          onChange={(e) => setOpis(e.target.value)}
+          className="border p-1 rounded text-sm"
+        />
+        <input
+          type="text"
+          placeholder="Audio URL (privremeno)"
+          value={audioUrl}
+          onChange={(e) => setAudioUrl(e.target.value)}
+          className="border p-1 rounded text-sm"
+        />
+        <input
+          type="number"
+          placeholder="Trajanje (sekunde)"
+          value={trajanje}
+          onChange={(e) => setTrajanje(e.target.value)}
+          className="border p-1 rounded text-sm"
+        />
+        <button type="submit" className="bg-black text-white p-1 rounded text-sm">
+          Dodaj epizodu
+        </button>
+        {error && <p className="text-red-600 text-sm">{error}</p>}
+      </form>
     </div>
   )
 }

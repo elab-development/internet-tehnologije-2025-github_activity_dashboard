@@ -70,7 +70,7 @@ model Episode {
   trajanje    Int
 
   podcastId String
-  podcast   Podcast @relation(fields: [podcastId], references: [id])
+  podcast   Podcast @relation(fields: [podcastId], references: [id], onDelete: Cascade)
 
   comments  Comment[]
   favorites Favorite[]
@@ -85,7 +85,7 @@ model Comment {
   user   User   @relation(fields: [userId], references: [id])
 
   episodeId String
-  episode   Episode @relation(fields: [episodeId], references: [id])
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
 }
 
 model Subscription {
@@ -96,7 +96,7 @@ model Subscription {
   user   User   @relation(fields: [userId], references: [id])
 
   podcastId String
-  podcast   Podcast @relation(fields: [podcastId], references: [id])
+  podcast   Podcast @relation(fields: [podcastId], references: [id], onDelete: Cascade)
 
   @@unique([userId, podcastId])
 }
@@ -109,7 +109,7 @@ model Favorite {
   user   User   @relation(fields: [userId], references: [id])
 
   episodeId String
-  episode   Episode @relation(fields: [episodeId], references: [id])
+  episode   Episode @relation(fields: [episodeId], references: [id], onDelete: Cascade)
 
   @@unique([userId, episodeId])
 }
