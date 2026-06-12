@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+enum TipKorisnika {
+  SLUSALAC
+  KREATOR
+  ADMIN
+}
+
+enum StatusNaloga {
+  AKTIVAN
+  SUSPENDOVAN
+  OBRISAN
+}
+
+enum KategorijaPodcasta {
+  TEHNOLOGIJA
+  EDUKACIJA
+  ZABAVA
+  BIZNIS
+  OSTALO
+}
+
+model User {
+  id                String       @id @default(uuid())
+  ime               String
+  email             String       @unique
+  lozinkaHash       String
+  role              TipKorisnika @default(SLUSALAC)
+  statusNaloga      StatusNaloga @default(AKTIVAN)
+  biografija        String?
+  nivoPrava         String?
+  datumRegistracije DateTime     @default(now())
+
+  podcasts      Podcast[]      @relation("CreatorPodcasts")
+  comments      Comment[]
+  subscriptions Subscription[]
+  favorites     Favorite[]
+}
+
+model Podcast {
+  id             String             @id @default(uuid())
+  naziv          String
+  opis           String
+  kategorija     KategorijaPodcasta
+  datumKreiranja DateTime           @default(now())
+
+  creatorId String
+  creator   User   @relation("CreatorPodcasts", fields: [creatorId], references: [id])
+
+  episodes      Episode[]
+  subscriptions Subscription[]
+}
+
+model Episode {
+  id          String   @id @default(uuid())
+  naslov      String
+  opis        String
+  datumObjave DateTime @default(now())
+  audioUrl    String
+  trajanje    Int
+
+  podcastId String
+  podcast   Podcast @relation(fields: [podcastId], references: [id])
+
+  comments  Comment[]
+  favorites Favorite[]
+}
+
+model Comment {
+  id             String   @id @default(uuid())
+  sadrzaj        String
+  datumKreiranja DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  episodeId String
+  episode   Episode @relation(fields: [episodeId], references: [id])
+}
+
+model Subscription {
+  id             String   @id @default(uuid())
+  datumPretplate DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  podcastId String
+  podcast   Podcast @relation(fields: [podcastId], references: [id])
+
+  @@unique([userId, podcastId])
+}
+
+model Favorite {
+  id             String   @id @default(uuid())
+  datumDodavanja DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  episodeId String
+  episode   Episode @relation(fields: [episodeId], references: [id])
+
+  @@unique([userId, episodeId])
+}
