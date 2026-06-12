@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { SubscribeButton } from '@/components/SubscribeButton'
-import { FavoriteButton } from '@/components/FavoriteButton'
 
 export default async function PodcastPage({
   params,
@@ -33,18 +33,13 @@ export default async function PodcastPage({
 
       <h2 className="text-xl font-semibold mt-6 mb-2">Epizode</h2>
 
-      <ul className="flex flex-col gap-3">
+      <ul className="flex flex-col gap-2">
         {podcast.episodes.map((ep) => (
           <li key={ep.id} className="border p-3 rounded">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="font-semibold">{ep.naslov}</h3>
-                <p className="text-sm text-gray-600">{ep.opis}</p>
-                <p className="text-xs text-gray-400">{Math.round(ep.trajanje / 60)} min</p>
-              </div>
-              <FavoriteButton episodeId={ep.id} />
-            </div>
-            <audio controls src={ep.audioUrl} className="w-full mt-2" />
+            <Link href={`/episodes/${ep.id}`} className="font-semibold hover:underline">
+              {ep.naslov}
+            </Link>
+            <p className="text-xs text-gray-400">{Math.round(ep.trajanje / 60)} min</p>
           </li>
         ))}
         {podcast.episodes.length === 0 && <p>Još nema epizoda.</p>}
