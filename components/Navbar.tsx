@@ -26,6 +26,8 @@ export function Navbar() {
 
         {status === 'authenticated' && (
           <>
+            <Link href="/favorites">Omiljeno</Link>
+            <Link href="/subscriptions">Pretplate</Link>
             {(session.user as any).role === 'KREATOR' && (
               <Link href="/dashboard">Dashboard</Link>
             )}
