@@ -22,70 +22,83 @@ export default async function PodcastPage({
   if (!podcast) notFound()
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="max-w-4xl mx-auto px-6 py-10">
       {/* Hero */}
-      <div className="relative rounded-2xl overflow-hidden mb-6">
+      <div className="rounded-2xl overflow-hidden mb-8">
         {podcast.coverImageUrl ? (
-          <>
+          <div className="relative">
             <img
               src={podcast.coverImageUrl}
               alt={podcast.naziv}
               className="w-full aspect-video object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-            <div className="absolute bottom-0 left-0 p-6">
-              <span className="text-xs font-semibold text-indigo-300 uppercase tracking-widest">
+            {/* Gradient overlay carrying title on image */}
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/30 to-transparent" />
+            <div className="absolute bottom-0 left-0 right-0 p-6">
+              <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">
                 {podcast.kategorija}
               </span>
-              <h1 className="text-3xl font-bold text-white mt-1 leading-tight">{podcast.naziv}</h1>
-              <p className="text-sm text-white/70 mt-1">
+              <h1 className="mt-1 text-3xl font-bold text-white leading-tight">
+                {podcast.naziv}
+              </h1>
+              <p className="mt-1.5 text-sm text-zinc-400">
                 by {podcast.creator.ime} · {podcast._count.subscriptions} pretplatnika
               </p>
             </div>
-          </>
+          </div>
         ) : (
-          <div className="bg-gradient-to-br from-indigo-50 to-violet-100 p-8">
-            <span className="text-xs font-semibold text-indigo-500 uppercase tracking-widest">
+          /* No-image fallback: clean dark surface */
+          <div className="bg-zinc-900 border border-zinc-800 px-8 py-10">
+            <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">
               {podcast.kategorija}
             </span>
-            <h1 className="text-3xl font-bold text-slate-900 mt-1 leading-tight">{podcast.naziv}</h1>
-            <p className="text-sm text-slate-500 mt-1">
+            <h1 className="mt-2 text-3xl font-bold text-zinc-100 leading-tight">
+              {podcast.naziv}
+            </h1>
+            <p className="mt-1.5 text-sm text-zinc-500">
               by {podcast.creator.ime} · {podcast._count.subscriptions} pretplatnika
             </p>
           </div>
         )}
       </div>
 
-      <div className="flex items-start justify-between gap-4 mb-8">
-        <p className="text-slate-600 leading-relaxed">{podcast.opis}</p>
+      {/* Description + subscribe CTA */}
+      <div className="flex items-start justify-between gap-6 mb-10">
+        <p className="text-zinc-400 leading-relaxed max-w-2xl">{podcast.opis}</p>
         <SubscribeButton podcastId={podcast.id} />
       </div>
 
-      <h2 className="text-xl font-semibold text-slate-900 mb-3">
-        Epizode
-        <span className="ml-2 text-sm font-normal text-slate-400">
-          ({podcast.episodes.length})
-        </span>
-      </h2>
+      {/* Episodes */}
+      <div>
+        <div className="flex items-center gap-3 mb-4">
+          <h2 className="text-lg font-semibold text-zinc-100">Epizode</h2>
+          <span className="text-xs font-medium text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded-full">
+            {podcast.episodes.length}
+          </span>
+        </div>
 
-      <div className="flex flex-col gap-2">
-        {podcast.episodes.map((ep) => (
-          <Link
-            key={ep.id}
-            href={`/episodes/${ep.id}`}
-            className="group bg-white border border-slate-100 shadow-sm hover:shadow-md rounded-xl px-5 py-4 transition-shadow flex items-center justify-between"
-          >
-            <span className="font-medium text-slate-800 group-hover:text-indigo-600 transition-colors">
-              {ep.naslov}
-            </span>
-            <span className="text-xs text-slate-400 shrink-0 ml-4">
-              {Math.round(ep.trajanje / 60)} min
-            </span>
-          </Link>
-        ))}
-        {podcast.episodes.length === 0 && (
-          <p className="text-slate-400 py-8 text-center">Još nema epizoda.</p>
-        )}
+        <div className="flex flex-col gap-2">
+          {podcast.episodes.map((ep) => (
+            <Link
+              key={ep.id}
+              href={`/episodes/${ep.id}`}
+              className="group bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl px-5 py-4 transition-colors flex items-center justify-between gap-4"
+            >
+              <span className="font-medium text-zinc-200 group-hover:text-indigo-400 transition-colors">
+                {ep.naslov}
+              </span>
+              <span className="text-xs text-zinc-500 shrink-0">
+                {Math.round(ep.trajanje / 60)} min
+              </span>
+            </Link>
+          ))}
+
+          {podcast.episodes.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-zinc-600 text-sm">Još nema epizoda.</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

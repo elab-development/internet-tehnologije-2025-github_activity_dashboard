@@ -48,15 +48,17 @@ export function CommentSection({
 
   return (
     <div>
-      <h2 className="text-lg font-semibold text-slate-900 mb-4">
-        Komentari
+      <div className="flex items-center gap-3 mb-6">
+        <h2 className="text-lg font-semibold text-zinc-100">Komentari</h2>
         {comments.length > 0 && (
-          <span className="ml-2 text-sm font-normal text-slate-400">({comments.length})</span>
+          <span className="text-xs font-medium text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded-full">
+            {comments.length}
+          </span>
         )}
-      </h2>
+      </div>
 
       {status === 'authenticated' && (
-        <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
+        <form onSubmit={handleSubmit} className="flex gap-3 mb-6">
           <Input
             type="text"
             placeholder="Napiši komentar..."
@@ -64,25 +66,26 @@ export function CommentSection({
             onChange={(e) => setText(e.target.value)}
             className="flex-1"
           />
-          <Button type="submit" className="px-4 py-2 shrink-0">
+          <Button type="submit" className="px-4 py-2.5 shrink-0">
             Pošalji
           </Button>
         </form>
       )}
-      {error && <p className="text-sm text-red-600 mb-3">{error}</p>}
+      {error && (
+        <p className="text-sm text-red-400 mb-4">{error}</p>
+      )}
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {comments.map((c) => (
-          <div
-            key={c.id}
-            className="bg-white border border-slate-100 shadow-sm rounded-xl px-4 py-3"
-          >
-            <p className="text-sm font-semibold text-slate-700">{c.user.ime}</p>
-            <p className="text-slate-600 mt-0.5">{c.sadrzaj}</p>
+          <div key={c.id} className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-4">
+            <p className="text-sm font-medium text-zinc-300 mb-1">{c.user.ime}</p>
+            <p className="text-zinc-400 text-sm leading-relaxed">{c.sadrzaj}</p>
           </div>
         ))}
         {comments.length === 0 && (
-          <p className="text-sm text-slate-400 py-4 text-center">Još nema komentara.</p>
+          <div className="text-center py-10">
+            <p className="text-zinc-600 text-sm">Još nema komentara. Budite prvi!</p>
+          </div>
         )}
       </div>
     </div>

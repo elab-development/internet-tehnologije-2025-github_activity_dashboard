@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { Button } from '@/components/Button'
 
 export function SubscribeButton({ podcastId }: { podcastId: string }) {
   const { status } = useSession()
@@ -31,14 +30,24 @@ export function SubscribeButton({ podcastId }: { podcastId: string }) {
   }
 
   return (
-    <Button
-      variant={subscribed ? 'primary' : 'ghost'}
+    <button
       onClick={toggle}
-      className={`shrink-0 px-4 py-2 text-sm border ${
-        subscribed ? 'border-indigo-600' : 'border-slate-300'
+      className={`shrink-0 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border transition-colors ${
+        subscribed
+          ? 'bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-500 hover:border-indigo-500'
+          : 'bg-transparent text-zinc-300 border-zinc-700 hover:border-zinc-500 hover:text-zinc-100'
       }`}
     >
-      {subscribed ? 'Pretplaćen ✓' : 'Pretplati se'}
-    </Button>
+      {subscribed ? (
+        <>
+          <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5}>
+            <path d="M20 6 9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          Pretplaćen
+        </>
+      ) : (
+        'Pretplati se'
+      )}
+    </button>
   )
 }

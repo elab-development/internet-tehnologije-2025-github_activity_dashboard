@@ -1,16 +1,21 @@
 import { ButtonHTMLAttributes } from 'react'
 
-type Variant = 'primary' | 'danger' | 'ghost'
+type Variant = 'primary' | 'secondary' | 'danger' | 'ghost'
 
 const base =
-  'inline-flex items-center justify-center font-medium rounded-md transition-colors ' +
-  'focus:outline-none focus:ring-2 focus:ring-offset-2 ' +
-  'disabled:opacity-50 disabled:cursor-not-allowed'
+  'inline-flex items-center justify-center font-medium rounded-lg transition-colors ' +
+  'focus:outline-none focus:ring-2 focus:ring-inset ' +
+  'disabled:opacity-40 disabled:cursor-not-allowed'
 
 const styles: Record<Variant, string> = {
-  primary: `${base} bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800 focus:ring-indigo-500`,
-  danger:  `${base} text-red-600 hover:bg-red-50 active:bg-red-100 focus:ring-red-500`,
-  ghost:   `${base} text-slate-600 hover:bg-slate-100 active:bg-slate-200 focus:ring-indigo-500`,
+  primary:
+    `${base} bg-indigo-600 text-white hover:bg-indigo-500 active:bg-indigo-700 focus:ring-indigo-400`,
+  secondary:
+    `${base} bg-zinc-800 text-zinc-100 border border-zinc-700 hover:bg-zinc-700 hover:border-zinc-600 active:bg-zinc-600 focus:ring-zinc-500`,
+  danger:
+    `${base} text-red-400 hover:bg-red-950/60 hover:text-red-300 active:bg-red-900/60 focus:ring-red-500`,
+  ghost:
+    `${base} text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 active:bg-zinc-700 focus:ring-zinc-500`,
 }
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

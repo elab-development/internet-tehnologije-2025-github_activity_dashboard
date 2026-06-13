@@ -32,12 +32,22 @@ export function FavoriteButton({ episodeId }: { episodeId: string }) {
   return (
     <button
       onClick={toggle}
-      className={`shrink-0 text-2xl leading-none transition-colors focus:outline-none ${
-        favorited ? 'text-amber-400 hover:text-amber-500' : 'text-slate-300 hover:text-amber-300'
-      }`}
       aria-label={favorited ? 'Ukloni iz omiljenih' : 'Dodaj u omiljene'}
+      className={`shrink-0 w-9 h-9 flex items-center justify-center rounded-lg border transition-colors ${
+        favorited
+          ? 'text-amber-400 border-amber-900/60 bg-amber-950/30 hover:bg-amber-950/50'
+          : 'text-zinc-600 border-zinc-700 hover:text-amber-400 hover:border-amber-900/60 hover:bg-amber-950/20'
+      }`}
     >
-      {favorited ? '★' : '☆'}
+      <svg
+        viewBox="0 0 24 24"
+        className="w-4 h-4"
+        fill={favorited ? 'currentColor' : 'none'}
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" />
+      </svg>
     </button>
   )
 }

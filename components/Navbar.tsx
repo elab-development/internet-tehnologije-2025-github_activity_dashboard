@@ -1,42 +1,56 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
-import { Button } from '@/components/Button'
 
 export function Navbar() {
   const { data: session, status } = useSession()
+  const pathname = usePathname()
+
+  function navLink(href: string, label: string) {
+    const isActive = href === '/' ? pathname === '/' : pathname.startsWith(href)
+    return (
+      <Link
+        href={href}
+        className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+          isActive
+            ? 'text-zinc-100 bg-zinc-800'
+            : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/60'
+        }`}
+      >
+        {label}
+      </Link>
+    )
+  }
 
   return (
-    <nav className="sticky top-0 z-10 bg-white/90 backdrop-blur border-b border-slate-200 shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-        <Link href="/" className="font-bold text-lg text-indigo-600 tracking-tight">
+    <nav className="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur-sm border-b border-zinc-800">
+      <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
+        <Link
+          href="/"
+          className="font-semibold text-zinc-100 tracking-tight hover:text-white transition-colors"
+        >
           Podcast Platforma
         </Link>
 
         <div className="flex items-center gap-1">
-          <Link
-            href="/"
-            className="px-3 py-1.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors"
-          >
-            Početna
-          </Link>
+          {navLink('/', 'Početna')}
 
           {status === 'loading' && (
-            <span className="text-sm text-slate-400 px-3">...</span>
+            <span className="text-sm text-zinc-600 px-3">...</span>
           )}
 
           {status === 'unauthenticated' && (
             <>
-              <Link
-                href="/login"
-                className="px-3 py-1.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors"
-              >
-                Login
-              </Link>
+              {navLink('/login', 'Login')}
               <Link
                 href="/register"
-                className="px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white hover:bg-indigo-700 rounded-md transition-colors"
+                className={`ml-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  pathname === '/register'
+                    ? 'bg-indigo-500 text-white'
+                    : 'bg-indigo-600 text-white hover:bg-indigo-500'
+                }`}
               >
                 Registracija
               </Link>
@@ -45,44 +59,21 @@ export function Navbar() {
 
           {status === 'authenticated' && (
             <>
-              <Link
-                href="/favorites"
-                className="px-3 py-1.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors"
-              >
-                Omiljeno
-              </Link>
-              <Link
-                href="/subscriptions"
-                className="px-3 py-1.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors"
-              >
-                Pretplate
-              </Link>
-              {(session.user as any).role === 'KREATOR' && (
-                <Link
-                  href="/dashboard"
-                  className="px-3 py-1.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors"
+              {navLink('/favorites', 'Omiljeno')}
+              {navLink('/subscriptions', 'Pretplate')}
+              {(session.user as any).role === 'KREATOR' && navLink('/dashboard', 'Dashboard')}
+              {(session.user as any).role === 'ADMIN' && navLink('/dashboard', 'Admin')}
+              <div className="flex items-center gap-2 ml-2 pl-3 border-l border-zinc-800">
+                <span className="text-sm text-zinc-500 hidden sm:block">
+                  {session.user?.name}
+                </span>
+                <button
+                  onClick={() => signOut({ callbackUrl: '/' })}
+                  className="px-3 py-1.5 text-sm text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/60 rounded-md transition-colors"
                 >
-                  Dashboard
-                </Link>
-              )}
-              {(session.user as any).role === 'ADMIN' && (
-                <Link
-                  href="/dashboard"
-                  className="px-3 py-1.5 text-sm text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-md transition-colors"
-                >
-                  Admin
-                </Link>
-              )}
-              <span className="text-sm text-slate-400 px-2 hidden sm:block">
-                {session.user?.name}
-              </span>
-              <Button
-                variant="ghost"
-                onClick={() => signOut({ callbackUrl: '/' })}
-                className="px-3 py-1.5 text-sm"
-              >
-                Logout
-              </Button>
+                  Logout
+                </button>
+              </div>
             </>
           )}
         </div>
