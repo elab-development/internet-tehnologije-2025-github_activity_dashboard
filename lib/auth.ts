@@ -26,6 +26,10 @@ export const authOptions: NextAuthOptions = {
         const isValid = await bcrypt.compare(credentials.password, user.lozinkaHash)
         if (!isValid) return null
 
+        if (user.statusNaloga === 'SUSPENDOVAN' || user.statusNaloga === 'OBRISAN') {
+          throw new Error('Nalog je suspendovan')
+        }
+
         return {
           id: user.id,
           email: user.email,

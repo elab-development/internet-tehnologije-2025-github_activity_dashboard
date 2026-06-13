@@ -62,7 +62,8 @@ export function Navbar() {
               {navLink('/favorites', 'Omiljeno')}
               {navLink('/subscriptions', 'Pretplate')}
               {(session.user as any).role === 'KREATOR' && navLink('/dashboard', 'Dashboard')}
-              {(session.user as any).role === 'ADMIN' && navLink('/dashboard', 'Admin')}
+              {(session.user as any).role === 'ADMIN' && navLink('/dashboard', 'Dashboard')}
+              {(session.user as any).role === 'ADMIN' && navLink('/admin/users', 'Admin')}
               <div className="flex items-center gap-2 ml-2 pl-3 border-l border-zinc-800">
                 <span className="text-sm text-zinc-500 hidden sm:block">
                   {session.user?.name}

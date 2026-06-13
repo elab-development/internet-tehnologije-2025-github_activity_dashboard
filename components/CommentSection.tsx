@@ -19,10 +19,23 @@ export function CommentSection({
   episodeId: string
   initialComments: Comment[]
 }) {
-  const { status } = useSession()
+  const { data: session, status } = useSession()
   const [comments, setComments] = useState(initialComments)
   const [text, setText] = useState('')
   const [error, setError] = useState('')
+
+  const currentUserId = (session?.user as any)?.id
+  const currentRole = (session?.user as any)?.role
+
+  async function handleDelete(commentId: string) {
+    const res = await fetch(`/api/comments/${commentId}`, {
+      method: 'DELETE',
+      credentials: 'include',
+    })
+    if (res.ok) {
+      setComments((prev) => prev.filter((c) => c.id !== commentId))
+    }
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -78,8 +91,21 @@ export function CommentSection({
       <div className="flex flex-col gap-3">
         {comments.map((c) => (
           <div key={c.id} className="bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-4">
-            <p className="text-sm font-medium text-zinc-300 mb-1">{c.user.ime}</p>
-            <p className="text-zinc-400 text-sm leading-relaxed">{c.sadrzaj}</p>
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <p className="text-sm font-medium text-zinc-300 mb-1">{c.user.ime}</p>
+                <p className="text-zinc-400 text-sm leading-relaxed">{c.sadrzaj}</p>
+              </div>
+              {(currentUserId === c.user.id || currentRole === 'ADMIN') && (
+                <Button
+                  variant="danger"
+                  className="shrink-0 text-xs px-2 py-1"
+                  onClick={() => handleDelete(c.id)}
+                >
+                  Obriši
+                </Button>
+              )}
+            </div>
           </div>
         ))}
         {comments.length === 0 && (
