@@ -22,7 +22,11 @@ export default function LoginPage() {
     })
 
     if (res?.error) {
-      setError('Pogrešan email ili lozinka')
+      if (res.error === 'Nalog je suspendovan') {
+        setError('Vaš nalog je suspendovan. Kontaktirajte administratora.')
+      } else {
+        setError('Pogrešan email ili lozinka')
+      }
     } else {
       router.push('/')
     }

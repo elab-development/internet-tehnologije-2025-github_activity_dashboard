@@ -201,7 +201,12 @@ export default function DashboardPage() {
                   </Button>
                 </div>
 
-                <EpisodeManager podcastId={p.id} episodes={p.episodes} onChange={fetchMyPodcasts} />
+                <EpisodeManager
+                  podcastId={p.id}
+                  episodes={p.episodes}
+                  onChange={fetchMyPodcasts}
+                  isOwner={p.creatorId === (session?.user as any)?.id}
+                />
               </div>
             ))}
 
@@ -221,10 +226,12 @@ function EpisodeManager({
   podcastId,
   episodes,
   onChange,
+  isOwner,
 }: {
   podcastId: string
   episodes: any[]
   onChange: () => void
+  isOwner: boolean
 }) {
   const [naslov, setNaslov] = useState('')
   const [opis, setOpis] = useState('')
@@ -317,8 +324,8 @@ function EpisodeManager({
         </ul>
       )}
 
-      {/* Add episode form */}
-      <div className="border border-dashed border-zinc-700 rounded-lg p-4">
+      {/* Add episode form — only for podcast owner */}
+      {isOwner && <div className="border border-dashed border-zinc-700 rounded-lg p-4">
         <p className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-3">
           Dodaj epizodu
         </p>
@@ -355,7 +362,7 @@ function EpisodeManager({
             {uploading ? 'Upload u toku...' : 'Dodaj epizodu'}
           </Button>
         </form>
-      </div>
+      </div>}
     </div>
   )
 }
