@@ -19,20 +19,26 @@ export default async function FavoritesPage() {
   })
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Omiljene epizode</h1>
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-slate-900 mb-6">Omiljene epizode</h1>
 
-      <ul className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {favorites.map((f) => (
-          <li key={f.id} className="border p-3 rounded">
-            <Link href={`/episodes/${f.episode.id}`} className="font-semibold hover:underline">
+          <Link
+            key={f.id}
+            href={`/episodes/${f.episode.id}`}
+            className="group bg-white border border-slate-100 shadow-sm hover:shadow-md rounded-xl px-5 py-4 transition-shadow"
+          >
+            <p className="font-medium text-slate-900 group-hover:text-indigo-600 transition-colors">
               {f.episode.naslov}
-            </Link>
-            <p className="text-sm text-gray-500">{f.episode.podcast.naziv}</p>
-          </li>
+            </p>
+            <p className="text-sm text-slate-400 mt-0.5">{f.episode.podcast.naziv}</p>
+          </Link>
         ))}
-        {favorites.length === 0 && <p className="text-sm text-gray-500">Nema omiljenih epizoda.</p>}
-      </ul>
+        {favorites.length === 0 && (
+          <p className="text-center text-slate-400 py-16">Nema omiljenih epizoda.</p>
+        )}
+      </div>
     </div>
   )
 }

@@ -3,8 +3,10 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { Input, Select } from '@/components/Input'
 import { Button } from '@/components/Button'
+import { Card } from '@/components/Card'
 
 export default function RegisterPage() {
   const [ime, setIme] = useState('')
@@ -46,44 +48,63 @@ export default function RegisterPage() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-sm mx-auto mt-10">
-      <h1 className="text-xl font-bold">Registracija</h1>
-
-      <Input
-        type="text"
-        placeholder="Ime i prezime"
-        value={ime}
-        onChange={(e) => setIme(e.target.value)}
-      />
-      <Input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <Input
-        type="password"
-        placeholder="Lozinka"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-
-      <label className="flex flex-col gap-1">
-        Tip korisnika
-        <Select
-          value={role}
-          onChange={(e) => setRole(e.target.value)}
-        >
-          <option value="SLUSALAC">Slušalac</option>
-          <option value="KREATOR">Podcast Kreator</option>
-        </Select>
-      </label>
-
-      <Button type="submit" className="p-2">
-        Registruj se
-      </Button>
-
-      {error && <p className="text-red-600">{error}</p>}
-    </form>
+    <div className="min-h-[calc(100vh-3.5rem)] flex items-center justify-center px-4 py-8">
+      <Card className="w-full max-w-sm p-8">
+        <h1 className="text-2xl font-bold text-slate-900 mb-6">Registracija</h1>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-700">Ime i prezime</label>
+            <Input
+              type="text"
+              placeholder="Vaše ime"
+              value={ime}
+              onChange={(e) => setIme(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-700">Email</label>
+            <Input
+              type="email"
+              placeholder="email@primer.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-700">Lozinka</label>
+            <Input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium text-slate-700">Tip korisnika</label>
+            <Select value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="SLUSALAC">Slušalac</option>
+              <option value="KREATOR">Podcast Kreator</option>
+            </Select>
+          </div>
+          {error && (
+            <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-md px-3 py-2">
+              {error}
+            </p>
+          )}
+          <Button type="submit" className="w-full px-4 py-2.5 mt-1">
+            Registruj se
+          </Button>
+          <p className="text-sm text-center text-slate-500">
+            Već imate nalog?{' '}
+            <Link href="/login" className="text-indigo-600 hover:underline font-medium">
+              Prijavite se
+            </Link>
+          </p>
+        </form>
+      </Card>
+    </div>
   )
 }

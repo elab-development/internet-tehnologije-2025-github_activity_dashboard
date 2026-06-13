@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Input, Select } from '@/components/Input'
-import { Card } from '@/components/Card'
 
 const KATEGORIJE = ['SVE', 'TEHNOLOGIJA', 'EDUKACIJA', 'ZABAVA', 'BIZNIS', 'OSTALO']
 
@@ -21,16 +20,16 @@ export default function HomePage() {
       fetch(`/api/podcasts?${params.toString()}`)
         .then((r) => r.json())
         .then(setPodcasts)
-    }, 300) // debounce za search
+    }, 300)
 
     return () => clearTimeout(timeout)
   }, [search, kategorija])
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Podkasti</h1>
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-slate-900 mb-6">Podkasti</h1>
 
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-3 mb-6">
         <Input
           type="text"
           placeholder="Pretraga..."
@@ -41,6 +40,7 @@ export default function HomePage() {
         <Select
           value={kategorija}
           onChange={(e) => setKategorija(e.target.value)}
+          className="w-44"
         >
           {KATEGORIJE.map((k) => (
             <option key={k} value={k}>{k}</option>
@@ -48,24 +48,45 @@ export default function HomePage() {
         </Select>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {podcasts.map((p) => (
-          <Card key={p.id}>
-            {p.coverImageUrl && (
-              <img src={p.coverImageUrl} alt={p.naziv} className="w-full h-32 object-cover rounded mb-2" />
+          <Link
+            key={p.id}
+            href={`/podcasts/${p.id}`}
+            className="group bg-white border border-slate-100 shadow-sm hover:shadow-md rounded-xl overflow-hidden transition-shadow"
+          >
+            {p.coverImageUrl ? (
+              <img
+                src={p.coverImageUrl}
+                alt={p.naziv}
+                className="w-full aspect-video object-cover"
+              />
+            ) : (
+              <div className="w-full aspect-video bg-gradient-to-br from-indigo-50 to-violet-100 flex items-center justify-center">
+                <svg className="w-12 h-12 text-indigo-300" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+                </svg>
+              </div>
             )}
-            <Link href={`/podcasts/${p.id}`} className="font-semibold text-lg hover:underline">
-              {p.naziv}
-            </Link>
-            <p className="text-sm text-gray-500">{p.kategorija} - by {p.creator.ime}</p>
-            <p className="text-sm">{p.opis}</p>
-            <p className="text-xs text-gray-400">
-              {p._count.episodes} epizoda · {p._count.subscriptions} pretplatnika
-            </p>
-          </Card>
+            <div className="p-4">
+              <span className="text-xs font-semibold text-indigo-500 uppercase tracking-wide">
+                {p.kategorija}
+              </span>
+              <h2 className="font-semibold text-slate-900 group-hover:text-indigo-600 transition-colors mt-0.5 leading-snug">
+                {p.naziv}
+              </h2>
+              <p className="text-sm text-slate-500 mt-1 line-clamp-2">{p.opis}</p>
+              <p className="text-xs text-slate-400 mt-2">
+                by {p.creator.ime} · {p._count.episodes} ep · {p._count.subscriptions} pretpl.
+              </p>
+            </div>
+          </Link>
         ))}
-        {podcasts.length === 0 && <p>Nema rezultata.</p>}
       </div>
+
+      {podcasts.length === 0 && (
+        <p className="text-center text-slate-400 py-16">Nema rezultata.</p>
+      )}
     </div>
   )
 }

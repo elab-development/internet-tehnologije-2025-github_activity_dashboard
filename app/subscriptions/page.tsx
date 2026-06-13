@@ -19,20 +19,26 @@ export default async function SubscriptionsPage() {
   })
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Moje pretplate</h1>
+    <div className="max-w-2xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-slate-900 mb-6">Moje pretplate</h1>
 
-      <ul className="flex flex-col gap-2">
+      <div className="flex flex-col gap-3">
         {subscriptions.map((s) => (
-          <li key={s.id} className="border p-3 rounded">
-            <Link href={`/podcasts/${s.podcast.id}`} className="font-semibold hover:underline">
+          <Link
+            key={s.id}
+            href={`/podcasts/${s.podcast.id}`}
+            className="group bg-white border border-slate-100 shadow-sm hover:shadow-md rounded-xl px-5 py-4 transition-shadow"
+          >
+            <p className="font-medium text-slate-900 group-hover:text-indigo-600 transition-colors">
               {s.podcast.naziv}
-            </Link>
-            <p className="text-sm text-gray-500">by {s.podcast.creator.ime}</p>
-          </li>
+            </p>
+            <p className="text-sm text-slate-400 mt-0.5">by {s.podcast.creator.ime}</p>
+          </Link>
         ))}
-        {subscriptions.length === 0 && <p className="text-sm text-gray-500">Nema pretplata.</p>}
-      </ul>
+        {subscriptions.length === 0 && (
+          <p className="text-center text-slate-400 py-16">Nema pretplata.</p>
+        )}
+      </div>
     </div>
   )
 }

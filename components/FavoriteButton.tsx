@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { Button } from '@/components/Button'
 
 export function FavoriteButton({ episodeId }: { episodeId: string }) {
   const { status } = useSession()
@@ -31,8 +30,14 @@ export function FavoriteButton({ episodeId }: { episodeId: string }) {
   }
 
   return (
-    <Button variant="ghost" onClick={toggle} className="text-xl">
+    <button
+      onClick={toggle}
+      className={`shrink-0 text-2xl leading-none transition-colors focus:outline-none ${
+        favorited ? 'text-amber-400 hover:text-amber-500' : 'text-slate-300 hover:text-amber-300'
+      }`}
+      aria-label={favorited ? 'Ukloni iz omiljenih' : 'Dodaj u omiljene'}
+    >
       {favorited ? '★' : '☆'}
-    </Button>
+    </button>
   )
 }

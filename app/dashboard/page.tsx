@@ -103,73 +103,98 @@ export default function DashboardPage() {
     fetchMyPodcasts()
   }
 
-  if (status === 'loading') return <p className="p-4">Učitavanje...</p>
+  if (status === 'loading') return (
+    <div className="flex items-center justify-center py-20">
+      <p className="text-slate-400">Učitavanje...</p>
+    </div>
+  )
   if (status === 'unauthenticated') return null
 
   const role = (session?.user as any)?.role
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+    <div className="max-w-5xl mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-slate-900 mb-8">Dashboard</h1>
 
-      {role === 'KREATOR' && (
-        <form onSubmit={handleCreatePodcast} className="flex flex-col gap-3 border p-4 rounded mb-6">
-          <h2 className="font-semibold">Novi podcast</h2>
-          <Input
-            type="text"
-            placeholder="Naziv"
-            value={naziv}
-            onChange={(e) => setNaziv(e.target.value)}
-          />
-          <Textarea
-            placeholder="Opis"
-            value={opis}
-            onChange={(e) => setOpis(e.target.value)}
-          />
-          <Select
-            value={kategorija}
-            onChange={(e) => setKategorija(e.target.value)}
-          >
-            {KATEGORIJE.map((k) => (
-              <option key={k} value={k}>{k}</option>
+      <div className="lg:grid lg:grid-cols-5 lg:gap-8 items-start">
+        {role === 'KREATOR' && (
+          <div className="lg:col-span-2 mb-8 lg:mb-0">
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold text-slate-900 mb-4">Novi podcast</h2>
+              <form onSubmit={handleCreatePodcast} className="flex flex-col gap-3">
+                <Input
+                  type="text"
+                  placeholder="Naziv"
+                  value={naziv}
+                  onChange={(e) => setNaziv(e.target.value)}
+                />
+                <Textarea
+                  placeholder="Opis"
+                  rows={3}
+                  value={opis}
+                  onChange={(e) => setOpis(e.target.value)}
+                />
+                <Select value={kategorija} onChange={(e) => setKategorija(e.target.value)}>
+                  {KATEGORIJE.map((k) => (
+                    <option key={k} value={k}>{k}</option>
+                  ))}
+                </Select>
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                    Cover slika
+                  </label>
+                  <Input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
+                    className="text-sm"
+                  />
+                </div>
+                {error && (
+                  <p className="text-sm text-red-600 bg-red-50 border border-red-100 rounded-md px-3 py-2">
+                    {error}
+                  </p>
+                )}
+                <Button type="submit" disabled={uploading} className="w-full px-4 py-2.5">
+                  {uploading ? 'Upload u toku...' : 'Kreiraj podcast'}
+                </Button>
+              </form>
+            </Card>
+          </div>
+        )}
+
+        <div className={role === 'KREATOR' ? 'lg:col-span-3' : 'lg:col-span-5'}>
+          <h2 className="text-lg font-semibold text-slate-900 mb-4">
+            {role === 'ADMIN' ? 'Svi podkasti' : 'Moji podkasti'}
+          </h2>
+
+          <div className="flex flex-col gap-4">
+            {podcasts.map((p) => (
+              <Card key={p.id} className="p-5">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 className="font-semibold text-slate-900">{p.naziv}</h3>
+                    <p className="text-xs text-indigo-500 font-medium uppercase tracking-wide mt-0.5">
+                      {p.kategorija}
+                    </p>
+                  </div>
+                  <Button
+                    variant="danger"
+                    onClick={() => handleDeletePodcast(p.id)}
+                    className="text-sm px-3 py-1.5"
+                  >
+                    Obriši
+                  </Button>
+                </div>
+
+                <EpisodeManager podcastId={p.id} episodes={p.episodes} onChange={fetchMyPodcasts} />
+              </Card>
             ))}
-          </Select>
-          <Input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
-            className="text-sm"
-          />
-          <Button type="submit" disabled={uploading} className="p-2 disabled:opacity-50">
-            {uploading ? 'Upload u toku...' : 'Kreiraj'}
-          </Button>
-          {error && <p className="text-red-600">{error}</p>}
-        </form>
-      )}
-
-      <h2 className="font-semibold mb-2">{role === 'ADMIN' ? 'Svi podkasti' : 'Moji podkasti'}</h2>
-
-      <div className="flex flex-col gap-4">
-        {podcasts.map((p) => (
-          <Card key={p.id}>
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="font-semibold text-lg">{p.naziv}</h3>
-                <p className="text-sm text-gray-500">{p.kategorija}</p>
-              </div>
-              <Button
-                variant="danger"
-                onClick={() => handleDeletePodcast(p.id)}
-                className="text-sm"
-              >
-                Obriši podcast
-              </Button>
-            </div>
-
-            <EpisodeManager podcastId={p.id} episodes={p.episodes} onChange={fetchMyPodcasts} />
-          </Card>
-        ))}
-        {podcasts.length === 0 && <p className="text-sm text-gray-500">Nemate podkaste.</p>}
+            {podcasts.length === 0 && (
+              <p className="text-sm text-slate-400 py-8 text-center">Nemate podkaste.</p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -253,51 +278,65 @@ function EpisodeManager({
   }
 
   return (
-    <div className="mt-3">
-      <ul className="flex flex-col gap-1 mb-2">
-        {episodes.map((ep) => (
-          <li key={ep.id} className="flex justify-between text-sm border-b py-1">
-            <span>{ep.naslov} ({Math.round(ep.trajanje / 60)} min)</span>
-            <Button variant="danger" onClick={() => handleDeleteEpisode(ep.id)}>
-              Obriši
-            </Button>
-          </li>
-        ))}
-      </ul>
+    <div>
+      {episodes.length > 0 && (
+        <ul className="flex flex-col divide-y divide-slate-100 mb-4 border border-slate-100 rounded-lg overflow-hidden">
+          {episodes.map((ep) => (
+            <li key={ep.id} className="flex justify-between items-center text-sm px-4 py-2.5 bg-slate-50">
+              <span className="text-slate-700">
+                {ep.naslov}
+                <span className="text-slate-400 ml-2">({Math.round(ep.trajanje / 60)} min)</span>
+              </span>
+              <Button
+                variant="danger"
+                onClick={() => handleDeleteEpisode(ep.id)}
+                className="text-xs px-2.5 py-1"
+              >
+                Obriši
+              </Button>
+            </li>
+          ))}
+        </ul>
+      )}
 
-      <form onSubmit={handleAddEpisode} className="flex flex-col gap-2 bg-gray-50 p-2 rounded">
-        <Input
-          type="text"
-          placeholder="Naslov epizode"
-          value={naslov}
-          onChange={(e) => setNaslov(e.target.value)}
-          className="text-sm"
-        />
-        <Input
-          type="text"
-          placeholder="Opis"
-          value={opis}
-          onChange={(e) => setOpis(e.target.value)}
-          className="text-sm"
-        />
-        <Input
-          type="file"
-          accept="audio/*"
-          onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
-          className="text-sm"
-        />
-        <Input
-          type="number"
-          placeholder="Trajanje (sekunde)"
-          value={trajanje}
-          onChange={(e) => setTrajanje(e.target.value)}
-          className="text-sm"
-        />
-        <Button type="submit" disabled={uploading} className="p-1 text-sm disabled:opacity-50">
-          {uploading ? 'Upload u toku...' : 'Dodaj epizodu'}
-        </Button>
-        {error && <p className="text-red-600 text-sm">{error}</p>}
-      </form>
+      <div className="border border-dashed border-slate-200 rounded-lg p-4 bg-slate-50/50">
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-3">
+          Nova epizoda
+        </p>
+        <form onSubmit={handleAddEpisode} className="flex flex-col gap-2">
+          <Input
+            type="text"
+            placeholder="Naslov epizode"
+            value={naslov}
+            onChange={(e) => setNaslov(e.target.value)}
+            className="text-sm"
+          />
+          <Input
+            type="text"
+            placeholder="Opis"
+            value={opis}
+            onChange={(e) => setOpis(e.target.value)}
+            className="text-sm"
+          />
+          <Input
+            type="file"
+            accept="audio/*"
+            onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
+            className="text-sm"
+          />
+          <Input
+            type="number"
+            placeholder="Trajanje (sekunde)"
+            value={trajanje}
+            onChange={(e) => setTrajanje(e.target.value)}
+            className="text-sm"
+          />
+          {error && <p className="text-red-600 text-xs">{error}</p>}
+          <Button type="submit" disabled={uploading} className="px-4 py-2 text-sm">
+            {uploading ? 'Upload u toku...' : 'Dodaj epizodu'}
+          </Button>
+        </form>
+      </div>
     </div>
   )
 }

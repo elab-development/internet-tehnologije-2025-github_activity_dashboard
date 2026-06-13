@@ -32,9 +32,11 @@ export function SubscribeButton({ podcastId }: { podcastId: string }) {
 
   return (
     <Button
-      variant="ghost"
+      variant={subscribed ? 'primary' : 'ghost'}
       onClick={toggle}
-      className={`mt-2 px-3 py-1 rounded border ${subscribed ? 'bg-black text-white' : ''}`}
+      className={`shrink-0 px-4 py-2 text-sm border ${
+        subscribed ? 'border-indigo-600' : 'border-slate-300'
+      }`}
     >
       {subscribed ? 'Pretplaćen ✓' : 'Pretplati se'}
     </Button>
