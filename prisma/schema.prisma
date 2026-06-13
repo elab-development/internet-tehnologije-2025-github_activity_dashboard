@@ -51,6 +51,7 @@ model Podcast {
   id             String             @id @default(uuid())
   naziv          String
   opis           String
+  coverImageUrl  String?
   kategorija     KategorijaPodcasta
   datumKreiranja DateTime           @default(now())
 

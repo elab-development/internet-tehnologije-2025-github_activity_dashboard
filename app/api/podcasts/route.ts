@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     )
   }
 
-  const { naziv, opis, kategorija } = await request.json()
+  const { naziv, opis, kategorija, coverImageUrl } = await request.json()
 
   if (!naziv || !opis || !kategorija) {
     return NextResponse.json(
@@ -58,6 +58,7 @@ export async function POST(request: Request) {
       naziv,
       opis,
       kategorija,
+      coverImageUrl: coverImageUrl || null,
       creatorId: (session.user as any).id,
     },
   })

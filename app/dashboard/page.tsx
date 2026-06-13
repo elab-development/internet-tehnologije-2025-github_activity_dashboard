@@ -16,6 +16,8 @@ export default function DashboardPage() {
   const [naziv, setNaziv] = useState('')
   const [opis, setOpis] = useState('')
   const [kategorija, setKategorija] = useState('OSTALO')
+  const [coverFile, setCoverFile] = useState<File | null>(null)
+  const [uploading, setUploading] = useState(false)
   const [error, setError] = useState('')
   const [podcasts, setPodcasts] = useState<any[]>([])
 
@@ -49,15 +51,36 @@ export default function DashboardPage() {
   async function handleCreatePodcast(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    setUploading(true)
+
+    let coverImageUrl: string | null = null
+
+    if (coverFile) {
+      const formData = new FormData()
+      formData.append('file', coverFile)
+      const uploadRes = await fetch('/api/upload', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      })
+      const uploadData = await uploadRes.json()
+      if (!uploadRes.ok) {
+        setError(uploadData.error || 'Greška prilikom upload-a slike')
+        setUploading(false)
+        return
+      }
+      coverImageUrl = uploadData.url
+    }
 
     const res = await fetch('/api/podcasts', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ naziv, opis, kategorija }),
+      body: JSON.stringify({ naziv, opis, kategorija, coverImageUrl }),
     })
 
     const data = await res.json()
+    setUploading(false)
     if (!res.ok) {
       setError(data.error || 'Greška')
       return
@@ -65,6 +88,7 @@ export default function DashboardPage() {
 
     setNaziv('')
     setOpis('')
+    setCoverFile(null)
     fetchMyPodcasts()
   }
 
@@ -110,8 +134,14 @@ export default function DashboardPage() {
               <option key={k} value={k}>{k}</option>
             ))}
           </Select>
-          <Button type="submit" className="p-2">
-            Kreiraj
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
+            className="text-sm"
+          />
+          <Button type="submit" disabled={uploading} className="p-2 disabled:opacity-50">
+            {uploading ? 'Upload u toku...' : 'Kreiraj'}
           </Button>
           {error && <p className="text-red-600">{error}</p>}
         </form>

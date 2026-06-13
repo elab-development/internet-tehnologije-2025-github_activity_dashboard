@@ -51,6 +51,9 @@ export default function HomePage() {
       <div className="flex flex-col gap-2">
         {podcasts.map((p) => (
           <Card key={p.id}>
+            {p.coverImageUrl && (
+              <img src={p.coverImageUrl} alt={p.naziv} className="w-full h-32 object-cover rounded mb-2" />
+            )}
             <Link href={`/podcasts/${p.id}`} className="font-semibold text-lg hover:underline">
               {p.naziv}
             </Link>

@@ -19,7 +19,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Fajl nije priložen' }, { status: 400 })
   }
 
-  const allowedTypes = ['audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/x-m4a', 'audio/mp4']
+  const allowedTypes = [
+  'audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/x-m4a', 'audio/mp4',
+  'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+]
   if (!allowedTypes.includes(file.type)) {
     return NextResponse.json({ error: 'Nepodržan format fajla' }, { status: 400 })
   }

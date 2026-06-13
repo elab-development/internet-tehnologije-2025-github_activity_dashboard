@@ -25,6 +25,9 @@ export default async function PodcastPage({
   return (
     <div className="p-4 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold">{podcast.naziv}</h1>
+      {podcast.coverImageUrl && (
+        <img src={podcast.coverImageUrl} alt={podcast.naziv} className="w-full h-48 object-cover rounded my-2" />
+      )}
       <p className="text-sm text-gray-500">
         {podcast.kategorija} · by {podcast.creator.ime} · {podcast._count.subscriptions} pretplatnika
       </p>
