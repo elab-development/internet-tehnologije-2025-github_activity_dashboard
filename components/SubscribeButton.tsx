@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { Button } from '@/components/Button'
 
 export function SubscribeButton({ podcastId }: { podcastId: string }) {
   const { status } = useSession()
@@ -30,11 +31,12 @@ export function SubscribeButton({ podcastId }: { podcastId: string }) {
   }
 
   return (
-    <button
+    <Button
+      variant="ghost"
       onClick={toggle}
       className={`mt-2 px-3 py-1 rounded border ${subscribed ? 'bg-black text-white' : ''}`}
     >
       {subscribed ? 'Pretplaćen ✓' : 'Pretplati se'}
-    </button>
+    </Button>
   )
 }

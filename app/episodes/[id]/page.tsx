@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import { CommentSection } from '@/components/CommentSection'
+import { Card } from '@/components/Card'
 
 export default async function EpisodePage({
   params,
@@ -35,10 +36,11 @@ export default async function EpisodePage({
         <FavoriteButton episodeId={episode.id} />
       </div>
 
-      <p className="text-sm text-gray-500">{Math.round(episode.trajanje / 60)} min</p>
-      <p className="mt-2">{episode.opis}</p>
-
-      <audio controls src={episode.audioUrl} className="w-full mt-4" />
+      <Card className="mt-4">
+        <p className="text-sm text-gray-500">{Math.round(episode.trajanje / 60)} min</p>
+        <p className="mt-2">{episode.opis}</p>
+        <audio controls src={episode.audioUrl} className="w-full mt-4" />
+      </Card>
 
       <CommentSection
         episodeId={episode.id}

@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { Input, Textarea, Select } from '@/components/Input'
+import { Button } from '@/components/Button'
+import { Card } from '@/components/Card'
 
 const KATEGORIJE = ['TEHNOLOGIJA', 'EDUKACIJA', 'ZABAVA', 'BIZNIS', 'OSTALO']
 
@@ -88,31 +91,28 @@ export default function DashboardPage() {
       {role === 'KREATOR' && (
         <form onSubmit={handleCreatePodcast} className="flex flex-col gap-3 border p-4 rounded mb-6">
           <h2 className="font-semibold">Novi podcast</h2>
-          <input
+          <Input
             type="text"
             placeholder="Naziv"
             value={naziv}
             onChange={(e) => setNaziv(e.target.value)}
-            className="border p-2 rounded"
           />
-          <textarea
+          <Textarea
             placeholder="Opis"
             value={opis}
             onChange={(e) => setOpis(e.target.value)}
-            className="border p-2 rounded"
           />
-          <select
+          <Select
             value={kategorija}
             onChange={(e) => setKategorija(e.target.value)}
-            className="border p-2 rounded"
           >
             {KATEGORIJE.map((k) => (
               <option key={k} value={k}>{k}</option>
             ))}
-          </select>
-          <button type="submit" className="bg-black text-white p-2 rounded">
+          </Select>
+          <Button type="submit" className="p-2">
             Kreiraj
-          </button>
+          </Button>
           {error && <p className="text-red-600">{error}</p>}
         </form>
       )}
@@ -121,22 +121,23 @@ export default function DashboardPage() {
 
       <div className="flex flex-col gap-4">
         {podcasts.map((p) => (
-          <div key={p.id} className="border p-3 rounded">
+          <Card key={p.id}>
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-semibold text-lg">{p.naziv}</h3>
                 <p className="text-sm text-gray-500">{p.kategorija}</p>
               </div>
-              <button
+              <Button
+                variant="danger"
                 onClick={() => handleDeletePodcast(p.id)}
-                className="text-red-600 text-sm"
+                className="text-sm"
               >
                 Obriši podcast
-              </button>
+              </Button>
             </div>
 
             <EpisodeManager podcastId={p.id} episodes={p.episodes} onChange={fetchMyPodcasts} />
-          </div>
+          </Card>
         ))}
         {podcasts.length === 0 && <p className="text-sm text-gray-500">Nemate podkaste.</p>}
       </div>
@@ -227,44 +228,44 @@ function EpisodeManager({
         {episodes.map((ep) => (
           <li key={ep.id} className="flex justify-between text-sm border-b py-1">
             <span>{ep.naslov} ({Math.round(ep.trajanje / 60)} min)</span>
-            <button onClick={() => handleDeleteEpisode(ep.id)} className="text-red-600">
+            <Button variant="danger" onClick={() => handleDeleteEpisode(ep.id)}>
               Obriši
-            </button>
+            </Button>
           </li>
         ))}
       </ul>
 
       <form onSubmit={handleAddEpisode} className="flex flex-col gap-2 bg-gray-50 p-2 rounded">
-        <input
+        <Input
           type="text"
           placeholder="Naslov epizode"
           value={naslov}
           onChange={(e) => setNaslov(e.target.value)}
-          className="border p-1 rounded text-sm"
+          className="text-sm"
         />
-        <input
+        <Input
           type="text"
           placeholder="Opis"
           value={opis}
           onChange={(e) => setOpis(e.target.value)}
-          className="border p-1 rounded text-sm"
+          className="text-sm"
         />
-        <input
+        <Input
           type="file"
           accept="audio/*"
           onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
-          className="border p-1 rounded text-sm"
+          className="text-sm"
         />
-        <input
+        <Input
           type="number"
           placeholder="Trajanje (sekunde)"
           value={trajanje}
           onChange={(e) => setTrajanje(e.target.value)}
-          className="border p-1 rounded text-sm"
+          className="text-sm"
         />
-        <button type="submit" disabled={uploading} className="bg-black text-white p-1 rounded text-sm disabled:opacity-50">
+        <Button type="submit" disabled={uploading} className="p-1 text-sm disabled:opacity-50">
           {uploading ? 'Upload u toku...' : 'Dodaj epizodu'}
-        </button>
+        </Button>
         {error && <p className="text-red-600 text-sm">{error}</p>}
       </form>
     </div>

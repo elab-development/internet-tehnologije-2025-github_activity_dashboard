@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { Input } from '@/components/Input'
+import { Button } from '@/components/Button'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -27,19 +29,19 @@ export default function LoginPage() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
+      <Input
         type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <input
+      <Input
         type="password"
         placeholder="Lozinka"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button type="submit">Login</button>
+      <Button type="submit" className="p-2 w-full">Login</Button>
       {error && <p>{error}</p>}
     </form>
   )

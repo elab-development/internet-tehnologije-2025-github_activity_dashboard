@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { SubscribeButton } from '@/components/SubscribeButton'
+import { Card } from '@/components/Card'
 
 export default async function PodcastPage({
   params,
@@ -33,17 +34,17 @@ export default async function PodcastPage({
 
       <h2 className="text-xl font-semibold mt-6 mb-2">Epizode</h2>
 
-      <ul className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2">
         {podcast.episodes.map((ep) => (
-          <li key={ep.id} className="border p-3 rounded">
+          <Card key={ep.id}>
             <Link href={`/episodes/${ep.id}`} className="font-semibold hover:underline">
               {ep.naslov}
             </Link>
             <p className="text-xs text-gray-400">{Math.round(ep.trajanje / 60)} min</p>
-          </li>
+          </Card>
         ))}
         {podcast.episodes.length === 0 && <p>Još nema epizoda.</p>}
-      </ul>
+      </div>
     </div>
   )
 }

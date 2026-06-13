@@ -2,6 +2,9 @@
 
 import { useState } from 'react'
 import { useSession } from 'next-auth/react'
+import { Input } from '@/components/Input'
+import { Button } from '@/components/Button'
+import { Card } from '@/components/Card'
 
 type Comment = {
   id: string
@@ -50,29 +53,29 @@ export function CommentSection({
 
       {status === 'authenticated' && (
         <form onSubmit={handleSubmit} className="flex gap-2 mb-4">
-          <input
+          <Input
             type="text"
             placeholder="Napiši komentar..."
             value={text}
             onChange={(e) => setText(e.target.value)}
-            className="border p-2 rounded flex-1"
+            className="flex-1"
           />
-          <button type="submit" className="bg-black text-white px-3 py-1 rounded">
+          <Button type="submit" className="px-3 py-1">
             Pošalji
-          </button>
+          </Button>
         </form>
       )}
       {error && <p className="text-red-600">{error}</p>}
 
-      <ul className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2">
         {comments.map((c) => (
-          <li key={c.id} className="border p-2 rounded">
+          <Card key={c.id}>
             <p className="text-sm font-semibold">{c.user.ime}</p>
             <p>{c.sadrzaj}</p>
-          </li>
+          </Card>
         ))}
         {comments.length === 0 && <p className="text-sm text-gray-500">Još nema komentara.</p>}
-      </ul>
+      </div>
     </div>
   )
 }

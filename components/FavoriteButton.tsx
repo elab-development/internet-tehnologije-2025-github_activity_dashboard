@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { Button } from '@/components/Button'
 
 export function FavoriteButton({ episodeId }: { episodeId: string }) {
   const { status } = useSession()
@@ -30,8 +31,8 @@ export function FavoriteButton({ episodeId }: { episodeId: string }) {
   }
 
   return (
-    <button onClick={toggle} className="text-xl">
+    <Button variant="ghost" onClick={toggle} className="text-xl">
       {favorited ? '★' : '☆'}
-    </button>
+    </Button>
   )
 }

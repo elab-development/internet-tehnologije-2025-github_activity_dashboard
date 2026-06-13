@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { Input, Select } from '@/components/Input'
+import { Button } from '@/components/Button'
 
 export default function RegisterPage() {
   const [ime, setIme] = useState('')
@@ -47,43 +49,39 @@ export default function RegisterPage() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-3 max-w-sm mx-auto mt-10">
       <h1 className="text-xl font-bold">Registracija</h1>
 
-      <input
+      <Input
         type="text"
         placeholder="Ime i prezime"
         value={ime}
         onChange={(e) => setIme(e.target.value)}
-        className="border p-2 rounded"
       />
-      <input
+      <Input
         type="email"
         placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="border p-2 rounded"
       />
-      <input
+      <Input
         type="password"
         placeholder="Lozinka"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-        className="border p-2 rounded"
       />
 
       <label className="flex flex-col gap-1">
         Tip korisnika
-        <select
+        <Select
           value={role}
           onChange={(e) => setRole(e.target.value)}
-          className="border p-2 rounded"
         >
           <option value="SLUSALAC">Slušalac</option>
           <option value="KREATOR">Podcast Kreator</option>
-        </select>
+        </Select>
       </label>
 
-      <button type="submit" className="bg-black text-white p-2 rounded">
+      <Button type="submit" className="p-2">
         Registruj se
-      </button>
+      </Button>
 
       {error && <p className="text-red-600">{error}</p>}
     </form>

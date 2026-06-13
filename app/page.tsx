@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { Input, Select } from '@/components/Input'
+import { Card } from '@/components/Card'
 
 const KATEGORIJE = ['SVE', 'TEHNOLOGIJA', 'EDUKACIJA', 'ZABAVA', 'BIZNIS', 'OSTALO']
 
@@ -29,27 +31,26 @@ export default function HomePage() {
       <h1 className="text-2xl font-bold mb-4">Podkasti</h1>
 
       <div className="flex gap-2 mb-4">
-        <input
+        <Input
           type="text"
           placeholder="Pretraga..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="border p-2 rounded flex-1"
+          className="flex-1"
         />
-        <select
+        <Select
           value={kategorija}
           onChange={(e) => setKategorija(e.target.value)}
-          className="border p-2 rounded"
         >
           {KATEGORIJE.map((k) => (
             <option key={k} value={k}>{k}</option>
           ))}
-        </select>
+        </Select>
       </div>
 
-      <ul className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2">
         {podcasts.map((p) => (
-          <li key={p.id} className="border p-3 rounded">
+          <Card key={p.id}>
             <Link href={`/podcasts/${p.id}`} className="font-semibold text-lg hover:underline">
               {p.naziv}
             </Link>
@@ -58,10 +59,10 @@ export default function HomePage() {
             <p className="text-xs text-gray-400">
               {p._count.episodes} epizoda · {p._count.subscriptions} pretplatnika
             </p>
-          </li>
+          </Card>
         ))}
         {podcasts.length === 0 && <p>Nema rezultata.</p>}
-      </ul>
+      </div>
     </div>
   )
 }
