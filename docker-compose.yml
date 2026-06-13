@@ -11,5 +11,18 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://podcast_user:podcast_pass@db:5432/podcast_db?schema=public
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+      NEXTAUTH_URL: http://localhost:3000
+    depends_on:
+      - db
+    volumes:
+      - ./public/uploads:/app/public/uploads
+
 volumes:
   pgdata:
