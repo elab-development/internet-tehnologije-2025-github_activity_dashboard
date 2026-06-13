@@ -32,7 +32,6 @@ export default function DashboardPage() {
 
     const mine = role === 'ADMIN' ? all : all.filter((p: any) => p.creatorId === userId)
 
-    // za svaki podcast, povuci epizode
     const withEpisodes = await Promise.all(
       mine.map(async (p: any) => {
         const r = await fetch(`/api/podcasts/${p.id}/episodes`)
@@ -67,14 +66,14 @@ export default function DashboardPage() {
   }
 
   async function handleDeletePodcast(id: string) {
-  if (!confirm('Obrisati podcast i sve njegove epizode?')) return
-  const res = await fetch(`/api/podcasts/${id}`, { method: 'DELETE', credentials: 'include' })
-  if (!res.ok) {
-    const data = await res.json()
-    alert(data.error || 'Greška prilikom brisanja')
-    return
-  }
-  fetchMyPodcasts()
+    if (!confirm('Obrisati podcast i sve njegove epizode?')) return
+    const res = await fetch(`/api/podcasts/${id}`, { method: 'DELETE', credentials: 'include' })
+    if (!res.ok) {
+      const data = await res.json()
+      alert(data.error || 'Greška prilikom brisanja')
+      return
+    }
+    fetchMyPodcasts()
   }
 
   if (status === 'loading') return <p className="p-4">Učitavanje...</p>
@@ -156,22 +155,54 @@ function EpisodeManager({
 }) {
   const [naslov, setNaslov] = useState('')
   const [opis, setOpis] = useState('')
-  const [audioUrl, setAudioUrl] = useState('')
+  const [audioFile, setAudioFile] = useState<File | null>(null)
   const [trajanje, setTrajanje] = useState('')
   const [error, setError] = useState('')
+  const [uploading, setUploading] = useState(false)
 
   async function handleAddEpisode(e: React.FormEvent) {
     e.preventDefault()
     setError('')
 
+    if (!audioFile) {
+      setError('Izaberite audio fajl')
+      return
+    }
+
+    setUploading(true)
+
+    const formData = new FormData()
+    formData.append('file', audioFile)
+
+    const uploadRes = await fetch('/api/upload', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData,
+    })
+
+    const uploadData = await uploadRes.json()
+
+    if (!uploadRes.ok) {
+      setError(uploadData.error || 'Greška prilikom upload-a')
+      setUploading(false)
+      return
+    }
+
     const res = await fetch(`/api/podcasts/${podcastId}/episodes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ naslov, opis, audioUrl, trajanje: Number(trajanje) }),
+      body: JSON.stringify({
+        naslov,
+        opis,
+        audioUrl: uploadData.url,
+        trajanje: Number(trajanje),
+      }),
     })
 
     const data = await res.json()
+    setUploading(false)
+
     if (!res.ok) {
       setError(data.error || 'Greška')
       return
@@ -179,7 +210,7 @@ function EpisodeManager({
 
     setNaslov('')
     setOpis('')
-    setAudioUrl('')
+    setAudioFile(null)
     setTrajanje('')
     onChange()
   }
@@ -219,10 +250,9 @@ function EpisodeManager({
           className="border p-1 rounded text-sm"
         />
         <input
-          type="text"
-          placeholder="Audio URL (privremeno)"
-          value={audioUrl}
-          onChange={(e) => setAudioUrl(e.target.value)}
+          type="file"
+          accept="audio/*"
+          onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
           className="border p-1 rounded text-sm"
         />
         <input
@@ -232,8 +262,8 @@ function EpisodeManager({
           onChange={(e) => setTrajanje(e.target.value)}
           className="border p-1 rounded text-sm"
         />
-        <button type="submit" className="bg-black text-white p-1 rounded text-sm">
-          Dodaj epizodu
+        <button type="submit" disabled={uploading} className="bg-black text-white p-1 rounded text-sm disabled:opacity-50">
+          {uploading ? 'Upload u toku...' : 'Dodaj epizodu'}
         </button>
         {error && <p className="text-red-600 text-sm">{error}</p>}
       </form>
