@@ -236,9 +236,26 @@ function EpisodeManager({
   const [naslov, setNaslov] = useState('')
   const [opis, setOpis] = useState('')
   const [audioFile, setAudioFile] = useState<File | null>(null)
-  const [trajanje, setTrajanje] = useState('')
+  const [audioDuration, setAudioDuration] = useState<number | null>(null)
   const [error, setError] = useState('')
   const [uploading, setUploading] = useState(false)
+
+  function getAudioDuration(file: File): Promise<number> {
+    return new Promise((resolve) => {
+      const audio = new Audio()
+      audio.src = URL.createObjectURL(file)
+      audio.addEventListener('loadedmetadata', () => {
+        resolve(Math.round(audio.duration))
+        URL.revokeObjectURL(audio.src)
+      })
+    })
+  }
+
+  function formatDuration(seconds: number): string {
+    const m = Math.floor(seconds / 60).toString().padStart(2, '0')
+    const s = (seconds % 60).toString().padStart(2, '0')
+    return `${m}:${s}`
+  }
 
   async function handleAddEpisode(e: React.FormEvent) {
     e.preventDefault()
@@ -276,7 +293,7 @@ function EpisodeManager({
         naslov,
         opis,
         audioUrl: uploadData.url,
-        trajanje: Number(trajanje),
+        trajanje: audioDuration ?? 0,
       }),
     })
 
@@ -291,7 +308,7 @@ function EpisodeManager({
     setNaslov('')
     setOpis('')
     setAudioFile(null)
-    setTrajanje('')
+    setAudioDuration(null)
     onChange()
   }
 
@@ -344,19 +361,21 @@ function EpisodeManager({
             onChange={(e) => setOpis(e.target.value)}
             className="text-sm"
           />
-          <Input
-            type="file"
-            accept="audio/*"
-            onChange={(e) => setAudioFile(e.target.files?.[0] || null)}
-            className="text-sm"
-          />
-          <Input
-            type="number"
-            placeholder="Trajanje (sekunde)"
-            value={trajanje}
-            onChange={(e) => setTrajanje(e.target.value)}
-            className="text-sm"
-          />
+          <div className="flex flex-col gap-1">
+            <Input
+              type="file"
+              accept="audio/*"
+              onChange={async (e) => {
+                const f = e.target.files?.[0] || null
+                setAudioFile(f)
+                setAudioDuration(f ? await getAudioDuration(f) : null)
+              }}
+              className="text-sm"
+            />
+            {audioDuration !== null && (
+              <p className="text-xs text-zinc-400">Trajanje: {formatDuration(audioDuration)}</p>
+            )}
+          </div>
           {error && <p className="text-red-400 text-xs">{error}</p>}
           <Button type="submit" disabled={uploading} className="px-4 py-2 text-sm">
             {uploading ? 'Upload u toku...' : 'Dodaj epizodu'}
