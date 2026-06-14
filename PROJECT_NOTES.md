@@ -126,6 +126,13 @@ Pokreće `app` (Next.js, port 3000) + `db` (lokalni Postgres, port 5432). Sve en
 - [x] AWS S3 bucket (`podcast-platform-mirkovic-2026`, eu-central-1, public read)
 - [x] AWS RDS PostgreSQL 16 (`podcast-platform-db`, eu-central-1, free tier)
 - [x] HTTP Security Headers (`next.config.ts` - X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy)
+- [x] AWS EC2 (t3.micro, Amazon Linux 2023, eu-central-1) - produkcijski server
+- [x] Elastic IP: `3.68.49.44` (statička IP, ne menja se pri restartu)
+- [x] Public DNS: `ec2-3-68-49-44.eu-central-1.compute.amazonaws.com`
+- [x] App live na: `http://ec2-3-68-49-44.eu-central-1.compute.amazonaws.com:3000`
+- [x] `docker-compose.prod.yml` - produkcijski compose (koristi Docker Hub image, RDS baza, bez lokalnog db servisa)
+- [x] Docker Hub image: `mirkovicpetar/podcast-platform:latest`
+- [x] NextAuth cookies fix za HTTP (`secure: false` u `lib/auth.ts`)
 
 ### Testovi
 - [x] Jest + ts-jest setup (`jest.config.js`, `__tests__/setup.ts`)
@@ -157,10 +164,10 @@ Pokreće `app` (Next.js, port 3000) + `db` (lokalni Postgres, port 5432). Sve en
 2. **Google OAuth** - login via Google (`next-auth/providers/google`)
 
 ## TODO (preostalo)
-- [ ] CI/CD pipeline (GitHub Actions - testovi na push, build Docker image, deploy)
-- [ ] EC2/App Runner deployment (live app na AWS)
+- [x] Cloud deployment - EC2 + RDS + S3 + Elastic IP
+- [ ] CI/CD pipeline (GitHub Actions)
 - [ ] README
-- [ ] Prateća dokumentacija (screenshots + opisi + isečci koda, po templejtu)
+- [ ] Prateća dokumentacija
 
 ## Poznate napomene / odluke
 - Prisma 7: `datasource.url` nije podržan u schema-i - koristi se `@prisma/adapter-pg` sa `process.env.DATABASE_URL` direktno u `lib/prisma.ts`
