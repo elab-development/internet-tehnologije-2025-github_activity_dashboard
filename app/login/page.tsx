@@ -78,6 +78,26 @@ export default function LoginPage() {
               Login
             </Button>
           </form>
+
+          <div className="mt-4">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-zinc-700" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-zinc-900 text-zinc-400">ili</span>
+              </div>
+            </div>
+
+            <Button
+              type="button"
+              variant="secondary"
+              className="w-full mt-4"
+              onClick={() => signIn('google', { callbackUrl: '/' })}
+            >
+              Nastavi sa Google
+            </Button>
+          </div>
         </div>
 
         {/* Footer link */}

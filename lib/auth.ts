@@ -1,5 +1,6 @@
 import { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
+import GoogleProvider from 'next-auth/providers/google'
 import bcrypt from 'bcryptjs'
 import { prisma } from '@/lib/prisma'
 
@@ -8,6 +9,10 @@ export const authOptions: NextAuthOptions = {
     strategy: 'jwt',
   },
   providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
     CredentialsProvider({
       name: 'credentials',
       credentials: {
@@ -40,11 +45,32 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
+    async jwt({ token, user, account }) {
+      if (account?.provider === 'google' && user) {
+        let dbUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+        })
+
+        if (!dbUser) {
+          dbUser = await prisma.user.create({
+            data: {
+              ime: user.name || 'Google Korisnik',
+              email: user.email!,
+              lozinkaHash: '',
+              role: 'SLUSALAC',
+            },
+          })
+        }
+
+        token.id = dbUser.id
+        token.role = dbUser.role
+      }
+
+      if (account?.provider === 'credentials' && user) {
         token.id = user.id
         token.role = (user as any).role
       }
+
       return token
     },
     async session({ session, token }) {
