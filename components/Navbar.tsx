@@ -36,6 +36,7 @@ export function Navbar() {
 
         <div className="flex items-center gap-1">
           {navLink('/', 'Početna')}
+          {navLink('/api-docs', 'API Docs')}
 
           {status === 'loading' && (
             <span className="text-sm text-zinc-600 px-3">...</span>

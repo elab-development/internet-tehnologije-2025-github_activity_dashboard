@@ -17,3 +17,11 @@ body {
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
+
+.swagger-wrapper .swagger-ui {
+  filter: invert(88%) hue-rotate(180deg);
+}
+.swagger-wrapper .swagger-ui .highlight-code,
+.swagger-wrapper .swagger-ui .microlight {
+  filter: invert(100%) hue-rotate(180deg);
+}
