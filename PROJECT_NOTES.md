@@ -157,7 +157,7 @@ Pokreće `app` (Next.js, port 3000) + `db` (lokalni Postgres, port 5432). Sve en
 2. **Google OAuth** - login via Google (`next-auth/providers/google`)
 
 ## TODO (preostalo)
-- [ ] CI/CD pipeline (GitHub Actions - testovi na push, build Docker image, deploy)
+- [x] CI/CD pipeline (GitHub Actions - testovi na push, build Docker image, deploy)
 - [ ] EC2/App Runner deployment (live app na AWS)
 - [ ] README
 - [ ] Prateća dokumentacija (screenshots + opisi + isečci koda, po templejtu)
