@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import { UserStatusButton } from '@/components/UserStatusButton'
 import { UserRoleButton } from '@/components/UserRoleButton'
+import { AdminStats } from '@/components/AdminStats'
 
 const roleBadge: Record<string, string> = {
   ADMIN: 'bg-indigo-900/60 text-indigo-300 border border-indigo-800',
@@ -54,6 +55,12 @@ export default async function AdminUsersPage() {
         <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Upravljanje korisnicima</h1>
         <p className="mt-1.5 text-zinc-400">{users.length} registrovanih korisnika</p>
       </div>
+
+      <AdminStats />
+
+      <div className="border-t border-zinc-800 my-8" />
+
+      <h2 className="text-xl font-semibold text-zinc-100 mb-4">Korisnici</h2>
 
       <div className="flex flex-col gap-2">
         {users.map((user) => (
