@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import { UserStatusButton } from '@/components/UserStatusButton'
+import { UserRoleButton } from '@/components/UserRoleButton'
 
 const roleBadge: Record<string, string> = {
   ADMIN: 'bg-indigo-900/60 text-indigo-300 border border-indigo-800',
@@ -72,6 +73,7 @@ export default async function AdminUsersPage() {
               <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${statusBadge[user.statusNaloga] ?? statusBadge.AKTIVAN}`}>
                 {statusLabel[user.statusNaloga] ?? user.statusNaloga}
               </span>
+              <UserRoleButton userId={user.id} currentRole={user.role} />
               {user.statusNaloga !== 'OBRISAN' && (
                 <UserStatusButton userId={user.id} statusNaloga={user.statusNaloga as any} />
               )}
