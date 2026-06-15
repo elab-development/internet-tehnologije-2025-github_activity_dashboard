@@ -50,8 +50,8 @@ Moderna web aplikacija za hostovanje i slušanje podkasta, razvijena kao seminar
 ### 1. Kloniranje repozitorijuma
 
 ```bash
-git clone https://github.com/elab-development/internet-tehnologije-2025-github_activity_dashboard.git
-cd internet-tehnologije-2025-github_activity_dashboard
+git clone https://github.com/elab-development/internet-tehnologije-2026-podcast-platform.git
+cd internet-tehnologije-2026-podcast-platform
 ```
 
 ### 2. Konfiguracija environment varijabli
