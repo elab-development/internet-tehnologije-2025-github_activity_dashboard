@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { deleteMultipleFromS3 } from '@/lib/s3'
 
 export async function GET(
   request: Request,
@@ -73,7 +74,10 @@ export async function DELETE(
     return NextResponse.json({ error: 'Niste ulogovani' }, { status: 401 })
   }
 
-  const podcast = await prisma.podcast.findUnique({ where: { id } })
+  const podcast = await prisma.podcast.findUnique({
+    where: { id },
+    include: { episodes: { select: { audioUrl: true } } },
+  })
   if (!podcast) {
     return NextResponse.json({ error: 'Podcast nije pronađen' }, { status: 404 })
   }
@@ -84,6 +88,12 @@ export async function DELETE(
   if (podcast.creatorId !== userId && role !== 'ADMIN') {
     return NextResponse.json({ error: 'Nemate dozvolu' }, { status: 403 })
   }
+
+  const s3Urls = [
+    podcast.coverImageUrl,
+    ...podcast.episodes.map(e => e.audioUrl),
+  ]
+  await deleteMultipleFromS3(s3Urls)
 
   await prisma.podcast.delete({ where: { id } })
 

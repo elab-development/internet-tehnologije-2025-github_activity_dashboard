@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
+import { deleteFromS3 } from '@/lib/s3'
 
 export async function GET(
   request: Request,
@@ -85,6 +86,8 @@ export async function DELETE(
   if ('error' in check) {
     return NextResponse.json({ error: check.error }, { status: check.status })
   }
+
+  await deleteFromS3(check.episode.audioUrl)
 
   await prisma.episode.delete({ where: { id } })
 
