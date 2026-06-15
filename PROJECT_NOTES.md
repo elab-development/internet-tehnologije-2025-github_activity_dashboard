@@ -11,6 +11,8 @@
 - Recharts - vizualizacija podataka (admin statistike)
 - Swagger UI React + swagger-jsdoc - API dokumentacija
 - Jest + ts-jest - automatizovani testovi
+- react-h5-audio-player - custom audio player sa dark theme-om
+- Framer Motion - NE (svesna odluka, nije dodato)
 
 ## Setup (novi clone)
 ```bash
@@ -119,6 +121,8 @@ Pokreće `app` (Next.js, port 3000) + `db` (lokalni Postgres, port 5432). Sve en
 - [x] `AdminStats` (client, recharts vizualizacija + summary cards)
 - [x] `UserStatusButton` (client, suspend/activate)
 - [x] `UserRoleButton` (client, promote/demote)
+- [x] `AudioPlayer` (client, react-h5-audio-player sa dark CSS override-om)
+- [x] `GuestModal` (client, modal za neregistrovane korisnike - poziv na register/login)
 
 ### Infrastruktura
 - [x] Dockerfile (multi-stage: deps → builder → runner, standalone output)
@@ -126,6 +130,14 @@ Pokreće `app` (Next.js, port 3000) + `db` (lokalni Postgres, port 5432). Sve en
 - [x] AWS S3 bucket (`podcast-platform-mirkovic-2026`, eu-central-1, public read)
 - [x] AWS RDS PostgreSQL 16 (`podcast-platform-db`, eu-central-1, free tier)
 - [x] HTTP Security Headers (`next.config.ts` - X-Frame-Options, HSTS, X-Content-Type-Options, Referrer-Policy, Permissions-Policy)
+- [x] AWS EC2 (t3.micro, Amazon Linux 2023, eu-central-1) - produkcijski server
+- [x] Elastic IP: `3.68.49.44` (statička IP)
+- [x] Public DNS: `ec2-3-68-49-44.eu-central-1.compute.amazonaws.com`
+- [x] App live na: `http://ec2-3-68-49-44.eu-central-1.compute.amazonaws.com:3000`
+- [x] `docker-compose.prod.yml` - produkcijski compose (Docker Hub image, RDS baza)
+- [x] Docker Hub image: `mirkovicpetar/podcast-platform:latest`
+- [x] CI/CD pipeline (`.github/workflows/ci.yml`) - testovi na push/PR, Docker build + push na master, SSH deploy na EC2
+- [x] NextAuth cookies fix za HTTP (`secure: false` u `lib/auth.ts`)
 
 ### Testovi
 - [x] Jest + ts-jest setup (`jest.config.js`, `__tests__/setup.ts`)
@@ -143,7 +155,7 @@ Pokreće `app` (Next.js, port 3000) + `db` (lokalni Postgres, port 5432). Sve en
 
 ## Git grane
 `main`, `develop` + feature grane (sve merge-ovane u develop):
-`feature/audio-upload`, `feature/reusable-components`, `feature/podcast-cover-image`, `feature/styling`, `feature/admin-panel`, `feature/dockerize`, `feature/s3-storage`, `feature/auto-duration`, `feature/google-oauth`, `feature/visualization`, `feature/swagger`, `feature/security`, `feature/tests`
+`feature/audio-upload`, `feature/reusable-components`, `feature/podcast-cover-image`, `feature/styling`, `feature/admin-panel`, `feature/dockerize`, `feature/s3-storage`, `feature/auto-duration`, `feature/google-oauth`, `feature/visualization`, `feature/swagger`, `feature/security`, `feature/tests`, `feature/cicd`, `feature/ui-improvements`
 
 ## Security mere (5)
 1. **SQL Injection** - Prisma parametrizovani upiti (by default)
@@ -158,8 +170,8 @@ Pokreće `app` (Next.js, port 3000) + `db` (lokalni Postgres, port 5432). Sve en
 
 ## TODO (preostalo)
 - [x] CI/CD pipeline (GitHub Actions - testovi na push, build Docker image, deploy)
-- [ ] EC2/App Runner deployment (live app na AWS)
-- [ ] README
+- [x] EC2/App Runner deployment (live app na AWS)
+- [x] README
 - [ ] Prateća dokumentacija (screenshots + opisi + isečci koda, po templejtu)
 
 ## Poznate napomene / odluke
@@ -169,4 +181,9 @@ Pokreće `app` (Next.js, port 3000) + `db` (lokalni Postgres, port 5432). Sve en
 - Google OAuth: merge po emailu - ako korisnik ima Credentials nalog sa istim emailom, Google login ga koristi (ne kreira duplikat)
 - Auto-detekcija trajanja epizode: HTML5 Audio API client-side (`getAudioDuration` funkcija u `EpisodeManager`)
 - `swagger-ui-react` baca `UNSAFE_componentWillReceiveProps` warning u konzoli - to je bug u biblioteci, ne u našem kodu, ne utiče na funkcionalnost
-- Guest mode (30s preview pa login popup) - odložen, nije u scope-u
+- Guest mode: implementiran - neregistrovani korisnici mogu da slušaju prvih 60 sekundi, nakon čega se prikazuje `GuestModal` sa pozivom na register/login/Google OAuth
+- NextAuth cookies: `secure: false` u `lib/auth.ts` zbog HTTP (ne HTTPS) na EC2 - neophodno za Google OAuth state cookie
+- UI: premium dark theme sa static mesh gradient pozadinom (`#111118` + indigo/purple radial gradienti), animated blobs samo na Home hero sekciji, noise texture overlay, square podcast kartice (Spotify stil), responsive navbar sa hamburger menijem na mobilnom, custom audio player (`react-h5-audio-player`)
+- Swagger: EC2 produkcijski server dodat u `lib/swagger.ts` servers niz
+- EC2 Elastic IP: statička IP `3.68.49.44` - ne menja se pri restartu instance
+- RDS Security Group: dodat `launch-wizard-2` (EC2 security group) kao izvor za port 5432

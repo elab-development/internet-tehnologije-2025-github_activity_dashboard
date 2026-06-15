@@ -25,6 +25,7 @@ Moderna web aplikacija za hostovanje i slušanje podkasta, razvijena kao seminar
 | Testovi | Jest + ts-jest |
 | Vizualizacija | Recharts |
 | API Dokumentacija | Swagger UI (OpenAPI 3.0) |
+| Audio Player | react-h5-audio-player |
 
 ---
 
@@ -215,7 +216,9 @@ Swagger UI dostupan na `/api-docs` (lokalno: http://localhost:3000/api-docs)
 │   ├── FavoriteButton.tsx # Omiljeni toggle
 │   ├── SubscribeButton.tsx# Pretplata toggle
 │   ├── UserRoleButton.tsx # Admin - promena role
-│   └── UserStatusButton.tsx# Admin - suspend/aktivacija
+│   ├── UserStatusButton.tsx# Admin - suspend/aktivacija
+│   ├── AudioPlayer.tsx    # Custom audio player sa dark theme-om
+│   └── GuestModal.tsx     # Modal za guest korisnike (60s preview limit)
 ├── lib/                   # Utility biblioteke
 │   ├── auth.ts            # NextAuth konfiguracija
 │   ├── prisma.ts          # Prisma client singleton
@@ -258,7 +261,7 @@ Swagger UI dostupan na `/api-docs` (lokalno: http://localhost:3000/api-docs)
 |-------|------|
 | `master` | Stabilna produkcijska verzija |
 | `develop` | Integraciona grana |
-| `feature/*` | Feature grane (14 feature grana) |
+| `feature/*` | Feature grane (16 feature grana) |
 
 ---
 
