@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { Input, Textarea, Select } from '@/components/Input'
 import { Button } from '@/components/Button'
+import { uploadFile } from '@/lib/upload'
 
 const KATEGORIJE = ['TEHNOLOGIJA', 'EDUKACIJA', 'ZABAVA', 'BIZNIS', 'OSTALO']
 
@@ -55,20 +56,13 @@ export default function DashboardPage() {
     let coverImageUrl: string | null = null
 
     if (coverFile) {
-      const formData = new FormData()
-      formData.append('file', coverFile)
-      const uploadRes = await fetch('/api/upload', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
-      })
-      const uploadData = await uploadRes.json()
-      if (!uploadRes.ok) {
-        setError(uploadData.error || 'Greška prilikom upload-a slike')
+      try {
+        coverImageUrl = await uploadFile(coverFile)
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Greška pri upload-u slike')
         setUploading(false)
         return
       }
-      coverImageUrl = uploadData.url
     }
 
     const res = await fetch('/api/podcasts', {
@@ -276,19 +270,11 @@ function EpisodeManager({
 
     setUploading(true)
 
-    const formData = new FormData()
-    formData.append('file', audioFile)
-
-    const uploadRes = await fetch('/api/upload', {
-      method: 'POST',
-      credentials: 'include',
-      body: formData,
-    })
-
-    const uploadData = await uploadRes.json()
-
-    if (!uploadRes.ok) {
-      setError(uploadData.error || 'Greška prilikom upload-a')
+    let audioUrl: string
+    try {
+      audioUrl = await uploadFile(audioFile)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Greška pri upload-u audio fajla')
       setUploading(false)
       return
     }
@@ -300,7 +286,7 @@ function EpisodeManager({
       body: JSON.stringify({
         naslov,
         opis,
-        audioUrl: uploadData.url,
+        audioUrl,
         trajanje: audioDuration ?? 0,
       }),
     })

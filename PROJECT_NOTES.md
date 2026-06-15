@@ -11,6 +11,7 @@
 - Recharts - vizualizacija podataka (admin statistike)
 - Swagger UI React + swagger-jsdoc - API dokumentacija
 - Jest + ts-jest - automatizovani testovi
+- @aws-sdk/s3-request-presigner - presigned URL generisanje za direktan browser→S3 upload
 - react-h5-audio-player - custom audio player sa dark theme-om
 - Framer Motion - NE (svesna odluka, nije dodato)
 
@@ -187,3 +188,5 @@ Pokreće `app` (Next.js, port 3000) + `db` (lokalni Postgres, port 5432). Sve en
 - Swagger: EC2 produkcijski server dodat u `lib/swagger.ts` servers niz
 - EC2 Elastic IP: statička IP `3.68.49.44` - ne menja se pri restartu instance
 - RDS Security Group: dodat `launch-wizard-2` (EC2 security group) kao izvor za port 5432
+- Upload arhitektura: presigned URL pristup - `GET /api/upload/presign` generiše potpisani S3 URL (važi 5 min), `lib/upload.ts` client-side helper orchestruje dvostepeni flow (1. traži URL od servera, 2. PUT direktno na S3). Fajl ne prolazi kroz EC2. Stari `POST /api/upload` ostaje kao fallback ali se ne koristi.
+- S3 CORS: bucket ima CORS konfiguraciju koja dozvoljava direktne PUT zahteve iz browsera (localhost:3000 i EC2 origin)
