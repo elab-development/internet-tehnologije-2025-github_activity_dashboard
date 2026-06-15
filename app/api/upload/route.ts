@@ -30,6 +30,7 @@ export async function POST(request: Request) {
   const allowedTypes = [
   'audio/mpeg', 'audio/mp3', 'audio/wav', 'audio/ogg', 'audio/x-m4a', 'audio/mp4',
   'image/jpeg', 'image/png', 'image/webp', 'image/gif',
+  'audio/webm', 'video/webm',
 ]
   if (!allowedTypes.includes(file.type)) {
     return NextResponse.json({ error: 'Nepodržan format fajla' }, { status: 400 })
