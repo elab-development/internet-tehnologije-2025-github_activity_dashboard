@@ -112,7 +112,7 @@ export default function DashboardPage() {
   const role = (session?.user as any)?.role
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10">
+    <div className="max-w-6xl mx-auto px-6 py-12">
       {/* Page header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Dashboard</h1>
@@ -126,7 +126,15 @@ export default function DashboardPage() {
         {role === 'KREATOR' && (
           <div className="lg:col-span-2 mb-8 lg:mb-0">
             <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
-              <h2 className="text-base font-semibold text-zinc-100 mb-5">Novi podcast</h2>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-10 h-10 bg-indigo-600/10 rounded-xl flex items-center justify-center">
+                  <span className="text-xl">🎙️</span>
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold text-zinc-100">Novi podcast</h2>
+                  <p className="text-xs text-zinc-500">Kreiraj novi podcast i dodaj epizode</p>
+                </div>
+              </div>
               <form onSubmit={handleCreatePodcast} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-medium text-zinc-400 uppercase tracking-wide">Naziv</label>

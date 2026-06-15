@@ -13,7 +13,7 @@ const styles: Record<Variant, string> = {
   secondary:
     `${base} bg-zinc-800 text-zinc-100 border border-zinc-700 hover:bg-zinc-700 hover:border-zinc-600 active:bg-zinc-600 focus:ring-zinc-500`,
   danger:
-    `${base} text-red-400 hover:bg-red-950/60 hover:text-red-300 active:bg-red-900/60 focus:ring-red-500`,
+    `${base} text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 active:bg-rose-900/60 focus:ring-rose-500`,
   ghost:
     `${base} text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 active:bg-zinc-700 focus:ring-zinc-500`,
 }

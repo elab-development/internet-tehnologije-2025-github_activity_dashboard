@@ -34,7 +34,7 @@ export function SubscribeButton({ podcastId }: { podcastId: string }) {
       onClick={toggle}
       className={`shrink-0 inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border transition-colors ${
         subscribed
-          ? 'bg-indigo-600 text-white border-indigo-600 hover:bg-indigo-500 hover:border-indigo-500'
+          ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700 hover:border-emerald-700'
           : 'bg-transparent text-zinc-300 border-zinc-700 hover:border-zinc-500 hover:text-zinc-100'
       }`}
     >

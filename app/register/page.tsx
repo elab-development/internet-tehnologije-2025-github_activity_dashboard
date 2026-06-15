@@ -57,7 +57,7 @@ export default function RegisterPage() {
 
         {/* Form card */}
         <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8">
-          <h1 className="text-xl font-semibold text-zinc-100 mb-6">Registracija</h1>
+          <h1 className="text-2xl font-bold text-zinc-100 mb-6">Registracija</h1>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div className="flex flex-col gap-1.5">

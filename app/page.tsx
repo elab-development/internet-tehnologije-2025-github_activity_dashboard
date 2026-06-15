@@ -27,10 +27,32 @@ export default function HomePage() {
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-10">
-      {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-100 tracking-tight">Podkasti</h1>
-        <p className="mt-1.5 text-zinc-400">Otkrijte i pretplatite se na omiljene podkaste</p>
+      {/* Hero sekcija sa animated blobs */}
+      <div className="relative text-center py-20 px-4 mb-10 overflow-hidden">
+        {/* Animated blobs - samo ovde */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div
+            className="absolute top-0 left-1/4 w-96 h-96 rounded-full opacity-20 blur-3xl animate-blob"
+            style={{ background: 'rgba(99, 102, 241, 0.4)' }}
+          />
+          <div
+            className="absolute top-0 right-1/4 w-80 h-80 rounded-full opacity-15 blur-3xl animate-blob animation-delay-2000"
+            style={{ background: 'rgba(168, 85, 247, 0.4)' }}
+          />
+          <div
+            className="absolute -bottom-10 left-1/2 w-72 h-72 rounded-full opacity-10 blur-3xl animate-blob animation-delay-4000"
+            style={{ background: 'rgba(99, 102, 241, 0.3)' }}
+          />
+        </div>
+        {/* Hero sadržaj */}
+        <div className="relative z-10">
+          <h1 className="text-5xl md:text-6xl font-bold text-zinc-100 tracking-tight mb-5">
+            🎙️ Otkrij nove podkaste
+          </h1>
+          <p className="text-xl text-zinc-400 max-w-xl mx-auto leading-relaxed">
+            Prati omiljene autore, komentariši epizode i slušaj gde god da si.
+          </p>
+        </div>
       </div>
 
       {/* Search + filter */}
@@ -55,43 +77,36 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Podcast grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {/* Podcast grid — Spotify style */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
         {podcasts.map((p) => (
-          <Link
-            key={p.id}
-            href={`/podcasts/${p.id}`}
-            className="group bg-zinc-900 border border-zinc-800 hover:border-zinc-700 rounded-xl overflow-hidden transition-colors"
-          >
-            {/* Cover */}
-            {p.coverImageUrl ? (
-              <img
-                src={p.coverImageUrl}
-                alt={p.naziv}
-                className="w-full aspect-video object-cover"
-              />
-            ) : (
-              <div className="w-full aspect-video bg-zinc-800 flex items-center justify-center">
-                <svg className="w-10 h-10 text-zinc-600" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-                </svg>
+          <Link href={`/podcasts/${p.id}`} key={p.id}>
+            <div className="group cursor-pointer hover:-translate-y-1 transition-all duration-200">
+              {/* Cover — square */}
+              <div className="relative aspect-square rounded-xl overflow-hidden bg-zinc-800 mb-3">
+                {p.coverImageUrl ? (
+                  <img
+                    src={p.coverImageUrl}
+                    alt={p.naziv}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-indigo-900/50 to-zinc-800">
+                    <span className="text-4xl">🎙️</span>
+                  </div>
+                )}
+                {/* Play button fade in on hover */}
+                <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+                    <span className="text-white text-sm">▶</span>
+                  </div>
+                </div>
               </div>
-            )}
-
-            {/* Content */}
-            <div className="p-5">
-              <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">
-                {p.kategorija}
-              </span>
-              <h2 className="mt-1.5 font-semibold text-zinc-100 group-hover:text-indigo-400 transition-colors leading-snug">
-                {p.naziv}
-              </h2>
-              <p className="mt-2 text-sm text-zinc-400 line-clamp-2 leading-relaxed">{p.opis}</p>
-              <div className="mt-4 flex items-center justify-between text-xs text-zinc-500">
-                <span className="truncate">{p.creator.ime}</span>
-                <span className="shrink-0 ml-3">
-                  {p._count.episodes} ep · {p._count.subscriptions} pretpl.
-                </span>
+              {/* Info */}
+              <div className="px-1">
+                <h3 className="font-semibold text-zinc-100 text-base truncate">{p.naziv}</h3>
+                <p className="text-xs text-zinc-500 truncate">{p.creator.ime}</p>
+                <p className="text-xs text-zinc-600 mt-1">{p._count.episodes} epizoda</p>
               </div>
             </div>
           </Link>

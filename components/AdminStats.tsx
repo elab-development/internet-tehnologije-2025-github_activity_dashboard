@@ -54,20 +54,23 @@ export function AdminStats() {
 
   const { totals, podcastsByCategory, topPodcasts } = data
 
-  const summaryCards = [
-    { label: 'Korisnici', value: totals.totalUsers },
-    { label: 'Podkasti', value: totals.totalPodcasts },
-    { label: 'Epizode', value: totals.totalEpisodes },
-    { label: 'Komentari', value: totals.totalComments },
+  const statCards = [
+    { label: 'Korisnici', value: totals.totalUsers, icon: '👤', color: 'text-indigo-400' },
+    { label: 'Podkasti', value: totals.totalPodcasts, icon: '🎙️', color: 'text-emerald-400' },
+    { label: 'Epizode', value: totals.totalEpisodes, icon: '🎵', color: 'text-amber-400' },
+    { label: 'Komentari', value: totals.totalComments, icon: '💬', color: 'text-rose-400' },
   ]
 
   return (
     <div className="mb-8 space-y-6">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {summaryCards.map(({ label, value }) => (
-          <Card key={label} className="flex flex-col gap-1">
-            <p className="text-xs text-zinc-500 uppercase tracking-wider">{label}</p>
-            <p className="text-3xl font-bold text-zinc-100">{value}</p>
+        {statCards.map((s) => (
+          <Card key={s.label} className="p-5">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-2xl">{s.icon}</span>
+              <span className={`text-xs font-semibold uppercase tracking-widest ${s.color}`}>{s.label}</span>
+            </div>
+            <p className="text-3xl font-bold text-zinc-100">{s.value}</p>
           </Card>
         ))}
       </div>

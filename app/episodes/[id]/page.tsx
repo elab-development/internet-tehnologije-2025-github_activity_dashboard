@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { FavoriteButton } from '@/components/FavoriteButton'
 import { CommentSection } from '@/components/CommentSection'
+import { PodcastAudioPlayer } from '@/components/AudioPlayer'
 
 export default async function EpisodePage({
   params,
@@ -39,7 +40,7 @@ export default async function EpisodePage({
 
       {/* Title row */}
       <div className="flex items-start justify-between gap-4 mb-2">
-        <h1 className="text-2xl font-bold text-zinc-100 leading-tight">{episode.naslov}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-zinc-100 leading-tight">{episode.naslov}</h1>
         <FavoriteButton episodeId={episode.id} />
       </div>
 
@@ -49,15 +50,11 @@ export default async function EpisodePage({
       </p>
 
       {/* Player card */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 mb-10">
+      <div className="mb-10">
         {episode.opis && (
-          <p className="text-zinc-400 leading-relaxed mb-6">{episode.opis}</p>
+          <p className="text-base text-zinc-400 leading-relaxed mb-4">{episode.opis}</p>
         )}
-        <audio
-          controls
-          src={episode.audioUrl}
-          className="w-full"
-        />
+        <PodcastAudioPlayer src={episode.audioUrl} title={episode.naslov} />
       </div>
 
       {/* Comments */}

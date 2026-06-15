@@ -38,7 +38,7 @@ export default async function PodcastPage({
               <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">
                 {podcast.kategorija}
               </span>
-              <h1 className="mt-1 text-3xl font-bold text-white leading-tight">
+              <h1 className="mt-1 text-3xl md:text-4xl font-bold text-white leading-tight">
                 {podcast.naziv}
               </h1>
               <p className="mt-1.5 text-sm text-zinc-400">
@@ -52,7 +52,7 @@ export default async function PodcastPage({
             <span className="text-xs font-semibold text-indigo-400 uppercase tracking-widest">
               {podcast.kategorija}
             </span>
-            <h1 className="mt-2 text-3xl font-bold text-zinc-100 leading-tight">
+            <h1 className="mt-2 text-3xl md:text-4xl font-bold text-zinc-100 leading-tight">
               {podcast.naziv}
             </h1>
             <p className="mt-1.5 text-sm text-zinc-500">
@@ -70,7 +70,7 @@ export default async function PodcastPage({
 
       {/* Episodes */}
       <div>
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-4 mb-4">
           <h2 className="text-lg font-semibold text-zinc-100">Epizode</h2>
           <span className="text-xs font-medium text-zinc-500 bg-zinc-800 px-2 py-0.5 rounded-full">
             {podcast.episodes.length}

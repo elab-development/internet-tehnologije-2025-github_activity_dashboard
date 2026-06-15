@@ -34,15 +34,15 @@ export function UserStatusButton({
       return <span className="text-xs text-zinc-600 px-3 py-1.5">(vaš nalog)</span>
     }
     return (
-      <Button variant="danger" className="text-xs px-3 py-1.5" onClick={toggle}>
+      <button className="px-3 py-1.5 rounded-lg text-xs font-medium text-rose-400 hover:bg-rose-500/10 transition-colors" onClick={toggle}>
         Suspenduj
-      </Button>
+      </button>
     )
   }
 
   return (
-    <Button variant="primary" className="text-xs px-3 py-1.5" onClick={toggle}>
+    <button className="px-3 py-1.5 rounded-lg text-xs font-medium text-emerald-400 hover:bg-emerald-500/10 transition-colors" onClick={toggle}>
       Aktiviraj
-    </Button>
+    </button>
   )
 }
