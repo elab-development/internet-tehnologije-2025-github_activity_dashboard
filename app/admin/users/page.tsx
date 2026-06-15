@@ -66,20 +66,22 @@ export default async function AdminUsersPage() {
         {users.map((user) => (
           <div
             key={user.id}
-            className="bg-zinc-900 border border-zinc-800 rounded-xl px-5 py-4 flex items-center justify-between gap-4"
+            className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 bg-zinc-900 border border-zinc-800 rounded-xl"
           >
-            <div className="min-w-0 flex-1">
+            <div className="flex flex-col gap-1 min-w-0">
               <p className="font-medium text-zinc-200 truncate">{user.ime}</p>
               <p className="text-sm text-zinc-500 truncate">{user.email}</p>
+              <div className="flex gap-2 mt-1">
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${roleBadge[user.role] ?? roleBadge.SLUSALAC}`}>
+                  {roleLabel[user.role] ?? user.role}
+                </span>
+                <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${statusBadge[user.statusNaloga] ?? statusBadge.AKTIVAN}`}>
+                  {statusLabel[user.statusNaloga] ?? user.statusNaloga}
+                </span>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
-              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${roleBadge[user.role] ?? roleBadge.SLUSALAC}`}>
-                {roleLabel[user.role] ?? user.role}
-              </span>
-              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${statusBadge[user.statusNaloga] ?? statusBadge.AKTIVAN}`}>
-                {statusLabel[user.statusNaloga] ?? user.statusNaloga}
-              </span>
+            <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:shrink-0">
               <UserRoleButton userId={user.id} currentRole={user.role} />
               {user.statusNaloga !== 'OBRISAN' && (
                 <UserStatusButton userId={user.id} statusNaloga={user.statusNaloga as any} />
