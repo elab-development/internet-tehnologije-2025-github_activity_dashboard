@@ -37,7 +37,8 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Niste ulogovani' }, { status: 401 })
   }
 
-  if ((session.user as any).role !== 'KREATOR') {
+  const role = (session.user as any).role
+  if (role !== 'KREATOR' && role !== 'ADMIN') {
     return NextResponse.json(
       { error: 'Samo Podcast Kreatori mogu kreirati podkaste' },
       { status: 403 }

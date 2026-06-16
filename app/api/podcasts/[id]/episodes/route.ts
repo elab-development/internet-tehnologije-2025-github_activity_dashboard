@@ -36,7 +36,7 @@ export async function POST(
   const userId = (session.user as any).id
   const role = (session.user as any).role
 
-  if (podcast.creatorId !== userId) {
+  if (podcast.creatorId !== userId && role !== 'ADMIN') {
     return NextResponse.json({ error: 'Nemate dozvolu' }, { status: 403 })
   }
 

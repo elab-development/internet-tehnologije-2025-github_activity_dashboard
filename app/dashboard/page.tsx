@@ -116,8 +116,8 @@ export default function DashboardPage() {
       </div>
 
       <div className="lg:grid lg:grid-cols-5 lg:gap-8 items-start">
-        {/* Create form — only for KREATOR */}
-        {role === 'KREATOR' && (
+        {/* Create form — only for KREATOR or ADMIN */}
+        {(role === 'KREATOR' || role === 'ADMIN') && (
           <div className="lg:col-span-2 mb-8 lg:mb-0">
             <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
               <div className="flex items-center gap-3 mb-6">
@@ -179,7 +179,7 @@ export default function DashboardPage() {
         )}
 
         {/* Podcast list */}
-        <div className={role === 'KREATOR' ? 'lg:col-span-3' : 'lg:col-span-5'}>
+        <div className={(role === 'KREATOR' || role === 'ADMIN') ? 'lg:col-span-3' : 'lg:col-span-5'}>
           <h2 className="text-base font-semibold text-zinc-100 mb-4">
             {role === 'ADMIN' ? 'Svi podkasti' : 'Moji podkasti'}
           </h2>
@@ -207,7 +207,7 @@ export default function DashboardPage() {
                   podcastId={p.id}
                   episodes={p.episodes}
                   onChange={fetchMyPodcasts}
-                  isOwner={p.creatorId === (session?.user as any)?.id}
+                  isOwner={p.creatorId === (session?.user as any)?.id || role === 'ADMIN'}
                 />
               </div>
             ))}
