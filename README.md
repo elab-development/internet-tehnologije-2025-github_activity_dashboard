@@ -222,12 +222,15 @@ Swagger UI dostupan na `/api-docs` (lokalno: http://localhost:3000/api-docs)
 ├── lib/                   # Utility biblioteke
 │   ├── auth.ts            # NextAuth konfiguracija
 │   ├── prisma.ts          # Prisma client singleton
-│   └── swagger.ts         # OpenAPI spec definicija
+│   ├── swagger.ts         # OpenAPI spec definicija
+│   ├── s3.ts              # AWS S3 helper (delete, extractKey)
+│   └── upload.ts          # Client-side upload helper (presigned URL)
 ├── prisma/
 │   ├── schema.prisma      # Prisma šema (6 modela)
 │   └── migrations/        # 3 migracije
 ├── __tests__/                # Jest testovi
 ├── .github/workflows/     # GitHub Actions CI/CD
+├── middleware.ts          # Route protection (dashboard zaštita)
 ├── Dockerfile             # Multi-stage Docker build
 ├── docker-compose.yml     # Lokalni dev (app + db)
 ├── docker-compose.prod.yml# Produkcija (samo app, RDS)
