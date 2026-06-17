@@ -72,6 +72,24 @@ const options = {
             error: { type: 'string' },
           },
         },
+        Subscription: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            userId: { type: 'string', format: 'uuid' },
+            podcastId: { type: 'string', format: 'uuid' },
+            datumPretplate: { type: 'string', format: 'date-time' },
+          },
+        },
+        Favorite: {
+          type: 'object',
+          properties: {
+            id: { type: 'string', format: 'uuid' },
+            userId: { type: 'string', format: 'uuid' },
+            episodeId: { type: 'string', format: 'uuid' },
+            datumDodavanja: { type: 'string', format: 'date-time' },
+          },
+        },
       },
     },
     paths: {
