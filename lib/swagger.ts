@@ -66,12 +66,6 @@ const options = {
             episodeId: { type: 'string', format: 'uuid' },
           },
         },
-        Error: {
-          type: 'object',
-          properties: {
-            error: { type: 'string' },
-          },
-        },
         Subscription: {
           type: 'object',
           properties: {
@@ -88,6 +82,12 @@ const options = {
             userId: { type: 'string', format: 'uuid' },
             episodeId: { type: 'string', format: 'uuid' },
             datumDodavanja: { type: 'string', format: 'date-time' },
+          },
+        },
+        Error: {
+          type: 'object',
+          properties: {
+            error: { type: 'string' },
           },
         },
       },
