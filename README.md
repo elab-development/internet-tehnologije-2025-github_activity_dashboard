@@ -257,7 +257,7 @@ Swagger UI dostupan na `/api-docs` (lokalno: http://localhost:3000/api-docs)
 3. `add_podcast_cover_image` - Dodavanje coverImageUrl kolone
 
 ---
-
+ftrftrfftrftrtftr
 ## Git grane
 
 | Grana | Opis |
